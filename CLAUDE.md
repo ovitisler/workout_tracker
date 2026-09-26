@@ -47,9 +47,17 @@ queries or migrations when running locally.
   `next build` works without database credentials (CI, forks). Don't create a
   client at module top level.
 - `GET /api/health` checks DB connectivity.
-- Every app table is owned by a user: `workouts.user_id` and
-  `exercises.user_id` (exercise names are unique per user). `sets` belong to a
-  user through their workout. Always filter queries by the current user's id.
+- User data is owned by a user (`workouts.user_id`; `sets` via their workout).
+  Always filter queries by the current user's id.
+- `exercises`: built-ins have `user_id` NULL and are visible to everyone;
+  custom ones have the creator's `user_id` and are private to them. Use the
+  helpers in `src/lib/exercises.ts`, which apply that visibility rule. Names are
+  unique ignoring case. Built-ins are seeded by a custom SQL migration
+  (`drizzle/0003_seed_exercises.sql`); add more with
+  `npx drizzle-kit generate --custom --name <name>`.
+- Each exercise has one `muscle_group` (Postgres enum). The list lives in
+  `src/lib/muscle-groups.ts` (client-safe, also used by the schema); changing it
+  needs a migration.
 
 ## Auth
 

@@ -1,13 +1,17 @@
+import { isNull, sql } from "drizzle-orm";
 import {
   boolean,
   index,
   integer,
   numeric,
+  pgEnum,
   pgTable,
   text,
   timestamp,
-  unique,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+
+import { MUSCLE_GROUPS } from "@/lib/muscle-groups";
 
 // --- Auth tables (Better Auth's core schema) ---
 // Field names must match what Better Auth expects; see
@@ -87,17 +91,29 @@ export const verification = pgTable(
 
 // --- App tables ---
 
+export const muscleGroup = pgEnum("muscle_group", MUSCLE_GROUPS);
+
+// Built-in exercises have no user (seeded by a migration and visible to
+// everyone). Custom exercises belong to, and are only visible to, one user.
+// Names are unique ignoring case: among built-ins, and within each user's own.
 export const exercises = pgTable(
   "exercises",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: text()
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    userId: text().references(() => user.id, { onDelete: "cascade" }),
     name: text().notNull(),
+    muscleGroup: muscleGroup().notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [unique("exercises_user_id_name_unique").on(t.userId, t.name)],
+  (t) => [
+    uniqueIndex("exercises_builtin_name_unique")
+      .on(sql`lower(${t.name})`)
+      .where(isNull(t.userId)),
+    uniqueIndex("exercises_user_id_name_unique").on(
+      t.userId,
+      sql`lower(${t.name})`,
+    ),
+  ],
 );
 
 export const workouts = pgTable(
