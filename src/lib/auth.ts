@@ -38,6 +38,8 @@ function createAuth() {
     baseURL: { allowedHosts: allowedHosts() },
     database: drizzleAdapter(getDb(), { provider: "pg", schema }),
     emailAndPassword: { enabled: true },
+    // Stay signed in for a year of inactivity; each day of use extends it.
+    session: { expiresIn: 60 * 60 * 24 * 365, updateAge: 60 * 60 * 24 },
     databaseHooks: {
       user: {
         create: {
