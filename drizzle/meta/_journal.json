@@ -8,6 +8,13 @@
       "when": 1790461355717,
       "tag": "0000_abandoned_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790462312332,
+      "tag": "0001_good_tattoo",
+      "breakpoints": true
     }
   ]
 }

@@ -10,10 +10,11 @@ one person's accounts.
 
 - Next.js (App Router) + TypeScript, Tailwind CSS — deployed on Vercel
 - Postgres on Neon (added via Vercel Storage), Drizzle ORM
+- Better Auth, email/password only (Google may come later)
 - Node 24 (`.nvmrc`, `engines` in `package.json`), npm
 
-Planned (not yet added): shadcn/ui components, Better Auth (Google sign-in
-first), Vitest unit tests, Playwright smoke tests against Vercel deployments.
+Planned (not yet added): shadcn/ui components, Vitest unit tests, Playwright
+smoke tests against Vercel deployments.
 
 ## Commands
 
@@ -46,6 +47,27 @@ queries or migrations when running locally.
   `next build` works without database credentials (CI, forks). Don't create a
   client at module top level.
 - `GET /api/health` checks DB connectivity.
+- Every app table is owned by a user: `workouts.user_id` and
+  `exercises.user_id` (exercise names are unique per user). `sets` belong to a
+  user through their workout. Always filter queries by the current user's id.
+
+## Auth
+
+- Config in `src/lib/auth.ts`. Like `getDb()`, the instance is lazy
+  (`getAuth()`) so builds need no secret or database.
+- Auth tables (`user`, `session`, `account`, `verification`) live in
+  `schema.ts` and are migrated like everything else.
+- Server code: `requireUser()` in pages/actions (redirects to `/sign-in`),
+  or `getSession()` when signed-out is OK. Sign-in/up/out are server actions in
+  `src/app/sign-in/actions.ts`; there's no client-side auth SDK.
+- `src/proxy.ts` only does an optimistic cookie check and redirect; it is not
+  the security boundary. Pages and actions must call `requireUser()`.
+- Sign-up is limited to `ALLOWED_EMAILS` (comma-separated) via a
+  `databaseHooks.user.create.before` hook. Unset means no sign-ups.
+- Base URL is resolved per request from `localhost:*` and Vercel's
+  `VERCEL_URL` / `VERCEL_BRANCH_URL` / `VERCEL_PROJECT_PRODUCTION_URL`, so
+  previews work with no URL config. A custom domain that isn't the production
+  domain would need adding to `allowedHosts()`.
 
 ## CI
 

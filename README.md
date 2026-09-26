@@ -7,6 +7,7 @@ A simple, mobile-friendly workout tracker. Built with Next.js and deployed on Ve
 - [Next.js](https://nextjs.org) (App Router) + TypeScript
 - [Tailwind CSS](https://tailwindcss.com)
 - Postgres on [Neon](https://neon.com) with [Drizzle ORM](https://orm.drizzle.team)
+- Email/password sign-in with [Better Auth](https://www.better-auth.com)
 - Hosted on [Vercel](https://vercel.com)
 
 ## Running locally
@@ -44,13 +45,31 @@ production stay in sync with the schema.
 
 `GET /api/health` returns `{"ok":true,"db":"up"}` when the app can reach the database.
 
+## Accounts
+
+Sign-up is invite-only: only emails listed in the `ALLOWED_EMAILS` environment
+variable (comma-separated) can create an account. If it's unset, nobody can
+sign up. Existing users can always sign in.
+
+Environment variables (set in Vercel under **Settings → Environment Variables**,
+then `vercel env pull .env.local` to get them locally):
+
+| Variable             | Environments                     | Value                                   |
+| -------------------- | -------------------------------- | --------------------------------------- |
+| `BETTER_AUTH_SECRET` | Production, Preview, Development | Output of `openssl rand -base64 32`     |
+| `ALLOWED_EMAILS`     | Production, Preview, Development | e.g. `you@example.com,friend@example.com` |
+
+There's no password reset yet (it needs an email provider).
+
 ## Deploying your own copy
 
 1. Fork this repo.
 2. In Vercel, **Add New → Project** and import your fork. The defaults work as-is.
 3. In the project's **Storage** tab, create a **Neon** Postgres database and connect it
    to all environments (enable branch-per-deployment for **Preview** only).
-4. Redeploy. Migrations run automatically during the build.
+4. Add `BETTER_AUTH_SECRET` and `ALLOWED_EMAILS` (see [Accounts](#accounts)).
+5. Redeploy. Migrations run automatically during the build.
+6. Open the site and use **Create account** with an allowed email.
 
 ## License
 
