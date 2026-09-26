@@ -1,6 +1,8 @@
 import { isNull, sql } from "drizzle-orm";
 import {
   boolean,
+  check,
+  date,
   index,
   integer,
   numeric,
@@ -116,33 +118,33 @@ export const exercises = pgTable(
   ],
 );
 
-export const workouts = pgTable(
-  "workouts",
+// One line in an exercise's history: "3 × 8 @ 135 lb" on a given day. A day
+// can have several entries (e.g. 2 × 8 and 1 × 6 at the same weight).
+export const entries = pgTable(
+  "entries",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     userId: text()
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    performedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-    notes: text(),
+    // No cascade: an exercise with history can't be deleted. Deleting a user
+    // still works because "no action" is checked at the end of the statement.
+    exerciseId: integer()
+      .notNull()
+      .references(() => exercises.id),
+    // The calendar day in the user's timezone, as "YYYY-MM-DD".
+    date: date().notNull(),
+    // Null means a single set.
+    sets: integer(),
+    reps: integer().notNull(),
+    // Pounds.
+    weight: numeric({ precision: 6, scale: 2, mode: "number" }).notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index().on(t.userId, t.performedAt)],
+  (t) => [
+    index().on(t.userId, t.exerciseId, t.date),
+    check("entries_sets_positive", sql`${t.sets} > 0`),
+    check("entries_reps_positive", sql`${t.reps} > 0`),
+    check("entries_weight_not_negative", sql`${t.weight} >= 0`),
+  ],
 );
-
-export const sets = pgTable("sets", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  workoutId: integer()
-    .notNull()
-    .references(() => workouts.id, { onDelete: "cascade" }),
-  // "no action" (the default) rather than "restrict": both block deleting an
-  // exercise that has sets, but "no action" is checked at the end of the
-  // statement, so deleting a user (which cascades to workouts, sets and
-  // exercises in no particular order) still works.
-  exerciseId: integer()
-    .notNull()
-    .references(() => exercises.id),
-  reps: integer(),
-  weight: numeric({ precision: 6, scale: 2 }),
-  createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-});

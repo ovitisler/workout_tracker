@@ -26,6 +26,7 @@ Other scripts:
 ```bash
 npm run lint       # ESLint
 npm run typecheck  # TypeScript type check
+npm test           # unit tests (Vitest)
 npm run build      # production build
 ```
 

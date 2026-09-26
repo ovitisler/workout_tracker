@@ -13,8 +13,9 @@ one person's accounts.
 - Better Auth, email/password only (Google may come later)
 - Node 24 (`.nvmrc`, `engines` in `package.json`), npm
 
-Planned (not yet added): shadcn/ui components, Vitest unit tests, Playwright
-smoke tests against Vercel deployments.
+- Vitest for unit tests of pure logic (e.g. `src/lib/entry-format.test.ts`)
+
+Planned (not yet added): Playwright smoke tests against Vercel deployments.
 
 ## Commands
 
@@ -22,6 +23,7 @@ smoke tests against Vercel deployments.
 npm run dev          # http://localhost:3000
 npm run lint
 npm run typecheck    # runs `next typegen` first — generated route types aren't committed
+npm test             # Vitest unit tests (*.test.ts next to the code)
 npm run build
 npm run db:generate  # schema.ts changes → new SQL migration in drizzle/
 npm run db:migrate   # apply migrations to the DB in .env.local
@@ -47,8 +49,10 @@ queries or migrations when running locally.
   `next build` works without database credentials (CI, forks). Don't create a
   client at module top level.
 - `GET /api/health` checks DB connectivity.
-- User data is owned by a user (`workouts.user_id`; `sets` via their workout).
-  Always filter queries by the current user's id.
+- `entries` is the log: one row per "sets × reps @ weight" on a `date`
+  (Postgres `date`, the user's local day as "YYYY-MM-DD"; there are no
+  times). `sets` NULL means one set; weight is lb. A day can have several
+  entries. Always filter by the current user's id.
 - `exercises`: built-ins have `user_id` NULL and are visible to everyone;
   custom ones have the creator's `user_id` and are private to them. Use the
   helpers in `src/lib/exercises.ts`, which apply that visibility rule. Names are
@@ -79,7 +83,7 @@ queries or migrations when running locally.
 
 ## CI
 
-`.github/workflows/ci.yml` runs lint → typecheck → build on PRs and pushes to
+`.github/workflows/ci.yml` runs lint → typecheck → unit tests → build on PRs and pushes to
 `main`, with no secrets. Keep the build working without a database.
 
 ## Git

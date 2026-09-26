@@ -29,6 +29,20 @@
       "when": 1790465756613,
       "tag": "0003_seed_exercises",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790466534871,
+      "tag": "0004_long_blur",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790466541680,
+      "tag": "0005_yellow_umar",
+      "breakpoints": true
     }
   ]
 }
