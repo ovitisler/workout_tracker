@@ -178,7 +178,7 @@ function RequestAccess({
       ) : (
         <form action={formAction} className="flex flex-col gap-3">
           <p className="text-zinc-700 dark:text-zinc-300">
-            This app is invite-only, and <span className="font-medium break-all">{email}</span> isn’t
+            This app is invite-only, and <span className="font-medium break-words">{email}</span> isn’t
             on the list yet. Ask the owner to let you in:
           </p>
           <input type="hidden" name="email" value={email} />

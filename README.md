@@ -94,8 +94,8 @@ Sign-up is invite-only. An email can create an account if it's in
 `ADMIN_EMAILS` or `ALLOWED_EMAILS`, or if an admin approved its access request.
 Existing users can always sign in.
 
-**Access requests:** when someone who isn't allowed taps **Create account**, they
-can send a request (with an optional note). Admins see them in **Settings →
+**Access requests:** when someone who isn't allowed tries to create an account,
+they're offered **Request access** instead (with an optional note). Admins see them in **Settings →
 Access requests** with a count of how many are waiting, and approve or deny
 each one. Approving takes effect immediately, with no redeploy. Nobody is
 notified by email, so check in now and then.
@@ -124,7 +124,7 @@ There's no password reset yet (it needs an email provider).
    to all environments (enable branch-per-deployment for **Preview** only).
 4. Add `BETTER_AUTH_SECRET` and `ADMIN_EMAILS` (see [Accounts](#accounts)).
 5. Redeploy. Migrations run automatically during the build.
-6. Open the site and use **Create account** with your admin email. Other people
+6. Open the site and create an account with your admin email. Other people
    can then request access, and you approve them in Settings.
 
 ## License

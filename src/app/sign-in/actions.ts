@@ -75,7 +75,7 @@ export async function requestAccess(
     return { message: "You're approved! Go back and create your account." };
   }
   if (existing) {
-    return { message: "You've already asked. The owner will review it." };
+    return { message: "You've already asked. Once you're approved, come back and create your account." };
   }
   if ((await countPendingRequests()) >= MAX_PENDING_REQUESTS) {
     return { error: "Too many requests right now. Try again later." };
@@ -83,6 +83,6 @@ export async function requestAccess(
 
   await getDb().insert(accessRequests).values({ email, note }).onConflictDoNothing();
   return {
-    message: "Request sent. Once it's approved, come back and tap Create account.",
+    message: "The owner will review it. Once you're approved, come back and create your account.",
   };
 }
