@@ -37,7 +37,8 @@ export function SignInForm() {
   // Kept across screens so it only needs typing once.
   const [email, setEmail] = useState("");
 
-  const goTo = (name: "sign-in" | "sign-up-email") => setStep({ name });
+  const goTo = (name: "sign-in" | "sign-up-email") =>
+    setStep(name === "sign-in" ? { name } : { name });
 
   let screen: React.ReactNode;
   switch (step.name) {
