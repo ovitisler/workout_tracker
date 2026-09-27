@@ -135,11 +135,20 @@ function generate(today: string) {
 
 async function askPassword() {
   if (process.env.DEMO_PASSWORD) return process.env.DEMO_PASSWORD;
+  if (!process.stdin.isTTY) {
+    console.error(
+      "No terminal to ask for a password in. Run this in a terminal, or set DEMO_PASSWORD.",
+    );
+    process.exit(1);
+  }
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: true });
   const write = (rl as unknown as { _writeToOutput: (s: string) => void });
   process.stdout.write(`Password for ${EMAIL} (min 8 chars): `);
   write._writeToOutput = () => {}; // don't echo the password
-  const password = await new Promise<string>((resolve) => rl.question("", resolve));
+  const password = await new Promise<string>((resolve) => {
+    rl.question("", resolve);
+    rl.on("close", () => resolve("")); // Ctrl-D / Ctrl-C
+  });
   rl.close();
   process.stdout.write("\n");
   return password;
