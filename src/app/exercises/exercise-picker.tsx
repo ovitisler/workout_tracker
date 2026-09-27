@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 
 import { normalizeExerciseName } from "@/lib/exercise-name";
+import { tabPath, type Tab } from "@/lib/tabs";
 import type { Exercise } from "@/lib/exercises";
 import { MUSCLE_GROUP_LABELS, MUSCLE_GROUPS } from "@/lib/muscle-groups";
 
@@ -17,7 +18,7 @@ function matches(name: string, query: string) {
     .every((word) => haystack.includes(word));
 }
 
-export function ExercisePicker({ exercises }: { exercises: Exercise[] }) {
+export function ExercisePicker({ exercises, tab }: { exercises: Exercise[]; tab: Tab }) {
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
   const [state, formAction, pending] = useActionState(addExercise, {});
@@ -59,6 +60,7 @@ export function ExercisePicker({ exercises }: { exercises: Exercise[] }) {
           ) : (
             <form action={formAction} className="flex flex-col gap-3">
               <input type="hidden" name="name" value={typedName} />
+              <input type="hidden" name="tab" value={tab} />
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Which muscle group is “{typedName}” for?
               </p>
@@ -104,7 +106,7 @@ export function ExercisePicker({ exercises }: { exercises: Exercise[] }) {
               {items.map((exercise) => (
                 <li key={exercise.id}>
                   <Link
-                    href={`/?exercise=${exercise.id}`}
+                    href={`${tabPath(tab)}?exercise=${exercise.id}`}
                     className="flex items-center justify-between px-3 py-3 text-zinc-950 active:bg-zinc-100 dark:text-zinc-50 dark:active:bg-zinc-800"
                   >
                     {exercise.name}

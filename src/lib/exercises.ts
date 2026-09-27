@@ -27,6 +27,15 @@ export function listExercises(userId: string) {
     .orderBy(asc(exercises.name));
 }
 
+// The exercise in a `?exercise=<id>` query param, if the user can see it.
+export async function getSelectedExercise(
+  userId: string,
+  param: string | string[] | undefined,
+) {
+  const id = Number(param);
+  return Number.isInteger(id) && id > 0 ? getExercise(userId, id) : undefined;
+}
+
 export async function getExercise(userId: string, id: number) {
   const [row] = await getDb()
     .select(columns)

@@ -64,6 +64,16 @@ queries or migrations when running locally.
   `src/lib/muscle-groups.ts` (client-safe, also used by the schema); changing it
   needs a migration.
 
+## App structure
+
+- Two tabs, `/` (Log) and `/stats`, share `AppShell` (`src/app/app-shell.tsx`);
+  the selected exercise is the `?exercise=<id>` query param and carries across
+  tabs. Tab paths live in `src/lib/tabs.ts`.
+- Stats math (per-day top set, estimated 1RM, trend fit, ranges, axis ticks)
+  is pure and tested in `src/lib/stats.ts`. Charts are hand-rolled SVG
+  (`src/app/stats/line-chart.tsx`), no chart library; one series per chart,
+  never two y-axes.
+
 ## Auth
 
 - Config in `src/lib/auth.ts`. Like `getDb()`, the instance is lazy
