@@ -8,6 +8,8 @@ import { getDb } from "@/db";
 import { routineExercises, routines } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
 import { getExercise } from "@/lib/exercises";
+import { applyRoutineTemplate } from "@/lib/apply-routine-template";
+import { findTemplate } from "@/lib/routine-templates";
 import { getRoutine } from "@/lib/routines";
 
 export type RoutineFormState = { error?: string };
@@ -46,6 +48,15 @@ export async function createRoutine(
 
   // Straight into editing, to add exercises.
   redirect(`/routines/${created.id}/edit`);
+}
+
+// Creates all the routines in a template (e.g. Push / Pull / Legs).
+export async function createRoutinesFromTemplate(templateId: string) {
+  const user = await requireUser();
+  const template = findTemplate(templateId);
+  if (!template) return;
+  await applyRoutineTemplate(user.id, template);
+  redirect("/routines");
 }
 
 export async function renameRoutine(

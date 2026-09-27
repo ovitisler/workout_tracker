@@ -1,12 +1,13 @@
 // Takes the screenshots in docs/screenshots/ by driving the app in an
 // iPhone-sized headless browser.
 //
-//   DEMO_EMAIL=alex@example.com DEMO_PASSWORD=... npm run seed-demo
+//   DEMO_EMAIL=alex@example.com DEMO_PASSWORD=... DEMO_SKIP_ROUTINES=1 npm run seed-demo
 //   npm run build && npm start                       # in another terminal
 //   DEMO_EMAIL=alex@example.com DEMO_PASSWORD=... npm run screenshots
 //
-// Use a freshly seeded demo account: the script logs two sets for today
-// through the UI (so a routine shows as partly done). Needs Chromium once:
+// Use a freshly seeded demo account without routines: the script shows the
+// empty Routines screen, creates Push / Pull / Legs from the template, and
+// logs two sets for today through the UI (so a routine shows as partly done). Needs Chromium once:
 // `npx playwright install chromium`. BASE_URL defaults to localhost:3000.
 
 import { mkdirSync } from "node:fs";
@@ -46,7 +47,7 @@ async function signIn(page: Page) {
   await page.goto(`${BASE_URL}/sign-in`);
   await page.fill("input[name=email]", EMAIL);
   await page.fill("input[name=password]", PASSWORD!);
-  await page.click("button[value=sign-in]");
+  await page.click("form button:text-is('Sign in')");
   await page.waitForURL(`${BASE_URL}/routines`);
 }
 
@@ -82,6 +83,14 @@ await page.goto(`${BASE_URL}/sign-in`);
 await shot(page, "sign-in");
 
 await signIn(page);
+await shot(page, "routines-empty");
+
+await page.locator("main button", { hasText: "Push / Pull / Legs" }).click();
+await page.locator("main a", { hasText: "Legs" }).waitFor();
+
+await page.goto(`${BASE_URL}/routines/new`);
+await shot(page, "new-routine");
+
 await logFromRoutine(page, "Push", "Bench Press", 1);
 await logFromRoutine(page, "Push", "Incline Dumbbell Press");
 

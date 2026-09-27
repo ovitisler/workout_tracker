@@ -57,27 +57,37 @@ them.
 
 <table>
   <tr>
+    <td><img src="screenshots/routines-empty.png" width="260" alt="Routines screen with no routines yet"></td>
     <td><img src="screenshots/routines.png" width="260" alt="Routines list"></td>
     <td><img src="screenshots/routine.png" width="260" alt="A routine with two of five exercises done today"></td>
-    <td><img src="screenshots/edit-routine.png" width="260" alt="Editing a routine"></td>
   </tr>
   <tr>
-    <td>Your routines, with today's progress.</td>
+    <td>Starting out: make one, or pick a template.</td>
+    <td>Your routines, with their exercises and when you last did each.</td>
     <td>Tap one at the gym. Each exercise shows what you did last time.</td>
-    <td>Rename, reorder, remove or add exercises.</td>
   </tr>
 </table>
 
-- **Create one** with **+** at the top of the Routines tab. You go straight to
-  adding exercises: search, then tap each one.
+- **Start from a template** to get going in one tap: **Push / Pull / Legs**
+  (3 routines) or **Upper / Lower** (4 routines), filled with common exercises.
+  Edit them however you like afterwards. Templates are on the empty Routines
+  screen and under **+**.
+- **Or create one yourself** with **+** (or **Create your first routine**), then
+  add exercises: search, and tap each one.
+- **The list** shows each routine's exercises and when you **last did it**, so you
+  can see which one is due. A routine counts as done on a day when you logged at
+  least half of its exercises. If you've started it today, you'll see "2/5 today".
 - **At the gym**, open the routine and tap an exercise to log it. Once you've
   logged something for it today, it gets a ✓, and the routine shows "2 of 5 done
-  today". Nothing to tick by hand, and it resets automatically the next day.
+  today". There's nothing to tick by hand, and it resets automatically the next
+  day.
 - **Edit** (top right) to rename the routine, reorder exercises with ↑ ↓, remove
   them with ✕, add more, or delete the routine. Changes save immediately.
   Deleting a routine never deletes what you've logged.
 - The same exercise can be in several routines (Squat in both "Lower 1" and
   "Lower 2", say).
+
+<img src="screenshots/edit-routine.png" width="260" alt="Editing a routine">
 
 ## Logging
 

@@ -69,10 +69,11 @@ production stay in sync with the schema.
 npm run seed-demo
 ```
 
-Creates `demo@example.com` with about two years of made-up history across 13
-exercises, plus three routines (asks for a password to set). Handy for trying the history and stats
+Creates `demo@example.com` with about two years of made-up history, plus
+Push / Pull / Legs routines (asks for a password to set). Handy for trying the history and stats
 screens. Re-running it deletes and re-creates the demo user. It writes to the
-database in `.env.local`. Set `DEMO_EMAIL` to use a different address.
+database in `.env.local`. Set `DEMO_EMAIL` to use a different address, and
+`DEMO_SKIP_ROUTINES=1` to leave out the routines (to see the empty Routines screen).
 
 ### Screenshots
 
@@ -82,11 +83,12 @@ iPhone-sized headless browser, signed in as a freshly seeded demo account:
 ```bash
 npx playwright install chromium   # one time
 export DEMO_EMAIL=alex@example.com DEMO_PASSWORD=some-password
-npm run seed-demo
+DEMO_SKIP_ROUTINES=1 npm run seed-demo
 npm run screenshots               # with `npm run build && npm start` running in another terminal
 ```
 
-The script logs two sets for today through the UI, so re-seed before each run.
+The script shows the empty Routines screen, creates routines from a template and
+logs two sets for today through the UI, so re-seed before each run.
 
 ## Accounts
 

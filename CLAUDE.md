@@ -86,7 +86,9 @@ User-facing docs live in `docs/how-it-works.md`, with screenshots from
 - Route folders hold only pages; components and server actions are in
   `src/components/<area>/`.
 - Routines (`routines` + `routine_exercises`, ordered by `position`) are named
-  lists of exercises. A routine exercise is "done" when it has an entry dated
+  lists of exercises. Starter templates live in `src/lib/routine-templates.ts`
+  (built-in exercise names only; a test checks them against the seed migration)
+  and are applied by `applyRoutineTemplate()`, also used by the demo seed. A routine exercise is "done" when it has an entry dated
   today; there's no separate completion state. "Today" is the device's date, so
   anything comparing against it renders client-side (`useLocalToday`).
 - Stats math (per-day top set, estimated 1RM, trend fit, ranges, axis ticks)

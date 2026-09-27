@@ -1,5 +1,5 @@
 // Creates (or re-creates) a demo user with ~2 years of made-up training
-// history and three routines, for trying the app with lots of data.
+// history and Push / Pull / Legs routines, for trying the app with lots of data.
 //
 //   npm run seed-demo
 //
@@ -15,8 +15,10 @@ import { generateRandomString, hashPassword } from "better-auth/crypto";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 import { getDb } from "../src/db";
-import { account, entries, exercises, routineExercises, routines, user } from "../src/db/schema";
+import { account, entries, exercises, user } from "../src/db/schema";
+import { applyRoutineTemplate } from "../src/lib/apply-routine-template";
 import { localToday } from "../src/lib/entry-format";
+import { findTemplate } from "../src/lib/routine-templates";
 
 // getDb() reads DATABASE_URL on first use, so loading it here is early enough.
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
@@ -46,10 +48,12 @@ const PLANS: Plan[] = [
   { name: "Squat", day: 3, start: 155, end: 255, step: 5, reps: [5, 8], sets: 3, pattern: "steady" },
   { name: "Romanian Deadlift", day: 3, start: 135, end: 205, step: 5, reps: [8, 10], sets: 3, pattern: "steady" },
   { name: "Leg Press", day: 3, start: 270, end: 450, step: 10, reps: [10, 12], sets: 3, pattern: "steady" },
+  { name: "Lying Leg Curl", day: 3, start: 60, end: 100, step: 5, reps: [10, 12], sets: 3, pattern: "steady" },
   { name: "Standing Calf Raise", day: 3, start: 100, end: 160, step: 10, reps: [12, 15], sets: 3, pattern: "plateau" },
   { name: "Deadlift", day: 5, start: 185, end: 315, step: 5, reps: [3, 5], sets: null, pattern: "steady" },
   { name: "Barbell Row", day: 5, start: 115, end: 165, step: 5, reps: [6, 10], sets: 3, pattern: "steady" },
   { name: "Lat Pulldown", day: 5, start: 100, end: 150, step: 5, reps: [8, 12], sets: 3, pattern: "steady" },
+  { name: "Face Pull", day: 5, start: 30, end: 50, step: 5, reps: [12, 15], sets: 3, pattern: "steady" },
   { name: "Barbell Curl", day: 5, start: 60, end: 80, step: 5, reps: [8, 12], sets: 3, pattern: "decline" },
 ];
 
@@ -197,22 +201,13 @@ for (let i = 0; i < rows.length; i += 500) {
   await db.insert(entries).values(rows.slice(i, i + 500));
 }
 
-// One routine per training day, exercises in plan order.
-const DAY_NAMES = { 1: "Push", 3: "Legs", 5: "Pull" } as const;
-for (const [position, day] of ([1, 3, 5] as const).entries()) {
-  const [routine] = await db
-    .insert(routines)
-    .values({ userId, name: DAY_NAMES[day], position })
-    .returning({ id: routines.id });
-  await db.insert(routineExercises).values(
-    PLANS.filter((p) => p.day === day).map((p, i) => ({
-      routineId: routine.id,
-      exerciseId: exerciseIds.get(p.name)!,
-      position: i,
-    })),
-  );
-}
+// Routines from the Push / Pull / Legs template, which matches the plans
+// above. DEMO_SKIP_ROUTINES=1 leaves them out, to show the empty Routines
+// screen (the screenshot script then creates them from the template).
+const withRoutines = !process.env.DEMO_SKIP_ROUTINES;
+if (withRoutines) await applyRoutineTemplate(userId, findTemplate("push-pull-legs")!);
 
 console.log(
-  `Created ${EMAIL} with ${rows.length} entries across ${PLANS.length} exercises, and 3 routines.`,
+  `Created ${EMAIL} with ${rows.length} entries across ${PLANS.length} exercises` +
+    (withRoutines ? ", and 3 routines." : ", no routines."),
 );
