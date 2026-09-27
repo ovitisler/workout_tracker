@@ -107,8 +107,11 @@ User-facing docs live in `docs/how-it-works.md`, with screenshots from
   `src/app/sign-in/actions.ts`; there's no client-side auth SDK.
 - `src/proxy.ts` only does an optimistic cookie check and redirect; it is not
   the security boundary. Pages and actions must call `requireUser()`.
-- Sign-up is limited to `ALLOWED_EMAILS` (comma-separated) via a
-  `databaseHooks.user.create.before` hook. Unset means no sign-ups.
+- Sign-up is invite-only, enforced by a `databaseHooks.user.create.before`
+  hook calling `canSignUp()` (`src/lib/access.ts`): allowed if the email is in
+  `ALLOWED_EMAILS` or `ADMIN_EMAILS` (comma-separated env vars) or has an
+  approved row in `access_requests`. Refused sign-ups can request access from
+  the sign-in page; admins review requests at `/settings/access-requests`.
 - Base URL is resolved per request from `localhost:*` and Vercel's
   `VERCEL_URL` / `VERCEL_BRANCH_URL` / `VERCEL_PROJECT_PRODUCTION_URL`, so
   previews work with no URL config. A custom domain that isn't the production

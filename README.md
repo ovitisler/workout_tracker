@@ -90,20 +90,29 @@ The script logs two sets for today through the UI, so re-seed before each run.
 
 ## Accounts
 
-Sign-up is invite-only: only emails listed in the `ALLOWED_EMAILS` environment
-variable (comma-separated) can create an account. If it's unset, nobody can
-sign up. Existing users can always sign in.
+Sign-up is invite-only. An email can create an account if it's in
+`ADMIN_EMAILS` or `ALLOWED_EMAILS`, or if an admin approved its access request.
+Existing users can always sign in.
+
+**Access requests:** when someone who isn't allowed tries to create an account,
+they're offered **Request access** instead (with an optional note). Admins see them in **Settings →
+Access requests** with a count of how many are waiting, and approve or deny
+each one. Approving takes effect immediately, with no redeploy. Nobody is
+notified by email, so check in now and then.
 
 Environment variables (set in Vercel under **Settings → Environment Variables**,
 then `vercel env pull .env.local` to get them locally):
 
-| Variable             | Environments                     | Value                                   |
-| -------------------- | -------------------------------- | --------------------------------------- |
-| `BETTER_AUTH_SECRET` | Production, Preview, Development | Output of `openssl rand -base64 32`     |
-| `ALLOWED_EMAILS`     | Production, Preview, Development | e.g. `you@example.com,friend@example.com` |
+| Variable             | Environments                     | Value                                        |
+| -------------------- | -------------------------------- | -------------------------------------------- |
+| `BETTER_AUTH_SECRET` | Production, Preview, Development | Output of `openssl rand -base64 32`          |
+| `ADMIN_EMAILS`       | Production, Preview, Development | You: `you@example.com` (comma-separated)     |
+| `ALLOWED_EMAILS`     | Production, Preview, Development | Optional: `friend@example.com,other@example.com` |
 
-`ALLOWED_EMAILS` isn't a secret: save it as a normal (not **Sensitive**) variable so
-you can see and edit the list later. After changing it, redeploy for it to take effect.
+Add each as one variable covering all three environments. `ADMIN_EMAILS` and
+`ALLOWED_EMAILS` aren't secrets: save them as normal (not **Sensitive**)
+variables so you can see and edit them later. After changing a variable,
+redeploy for it to take effect.
 
 There's no password reset yet (it needs an email provider).
 
@@ -113,9 +122,10 @@ There's no password reset yet (it needs an email provider).
 2. In Vercel, **Add New → Project** and import your fork. The defaults work as-is.
 3. In the project's **Storage** tab, create a **Neon** Postgres database and connect it
    to all environments (enable branch-per-deployment for **Preview** only).
-4. Add `BETTER_AUTH_SECRET` and `ALLOWED_EMAILS` (see [Accounts](#accounts)).
+4. Add `BETTER_AUTH_SECRET` and `ADMIN_EMAILS` (see [Accounts](#accounts)).
 5. Redeploy. Migrations run automatically during the build.
-6. Open the site and use **Create account** with an allowed email.
+6. Open the site and create an account with your admin email. Other people
+   can then request access, and you approve them in Settings.
 
 ## License
 

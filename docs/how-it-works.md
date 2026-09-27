@@ -29,9 +29,16 @@ Group the exercises you always do together into **routines** (like "Push" or
 
 <img src="screenshots/sign-in.png" width="260" alt="Sign-in screen" align="right">
 
-Open the app in your phone's browser and **Create account** with your email and a
-password (8+ characters). Sign-up is invite-only: your email has to be on the
-owner's allowlist.
+Open the app in your phone's browser and tap **Create an account** under the
+sign-in form. Enter your email and tap **Continue**. Sign-up is invite-only, so the
+app checks your email first:
+
+- **You're on the list:** choose a password (8+ characters; your phone can
+  suggest one) and tap **Create account**.
+- **You're not on the list yet:** you're asked to **Request access** instead. Add a
+  note saying who you are, and once the owner approves it, come back and create
+  your account.
+- **You already have an account:** you're sent to **Sign in**.
 
 To use it like an app, add it to your home screen: in Safari, tap **Share →
 Add to Home Screen**. It opens full screen, with its own icon, and stays signed
@@ -159,6 +166,11 @@ weeks (a vacation, say) break the line rather than drawing across them.
 ## Settings and accounts
 
 **Settings** shows the email you're signed in with and has **Sign out**.
+
+Admins (set with `ADMIN_EMAILS`) also see **Access requests**, with a count of
+people waiting. Each request shows the email, their note and when they asked, with
+**Approve** and **Deny**. Approved people can create an account straight away.
+You can change your mind later, as long as they haven't signed up yet.
 
 Each person has their own routines, log and stats; nobody can see anyone else's.
 The built-in exercise list is shared, but custom exercises are private.

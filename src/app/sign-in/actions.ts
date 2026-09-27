@@ -4,9 +4,18 @@ import { isAPIError } from "better-auth/api";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { getDb } from "@/db";
+import { accessRequests } from "@/db/schema";
+import { canSignUp, countPendingRequests, findRequest, hasAccount } from "@/lib/access";
 import { getAuth } from "@/lib/auth";
+import { isValidEmail } from "@/lib/email-list";
 
-export type SignInState = { error?: string; email?: string };
+export type SignInState = {
+  error?: string;
+  email?: string;
+  // Sign-up was refused because the email isn't allowed: offer to request access.
+  canRequestAccess?: boolean;
+};
 
 export async function signIn(
   _prev: SignInState,
@@ -31,7 +40,11 @@ export async function signIn(
     }
   } catch (error) {
     if (isAPIError(error)) {
-      return { error: error.message, email };
+      return {
+        error: error.message,
+        email,
+        canRequestAccess: creatingAccount && error.status === "FORBIDDEN",
+      };
     }
     throw error;
   }
@@ -39,7 +52,55 @@ export async function signIn(
   redirect("/");
 }
 
+export type EmailCheck =
+  | "allowed" // go on to choose a password
+  | "has-account" // sign in instead
+  | "requested" // already asked for access, not approved (yet)
+  | "not-allowed" // can request access
+  | "invalid";
+
+// First step of creating an account: whether this email can, before asking
+// for a password. The sign-up hook still enforces the rules on the real
+// sign-up, so this is only for a friendlier flow.
+export async function checkSignUpEmail(rawEmail: string): Promise<EmailCheck> {
+  const email = rawEmail.trim().toLowerCase();
+  if (!isValidEmail(email)) return "invalid";
+  if (await hasAccount(email)) return "has-account";
+  if (await canSignUp(email)) return "allowed";
+  return (await findRequest(email)) ? "requested" : "not-allowed";
+}
+
 export async function signOut() {
   await getAuth().api.signOut({ headers: await headers() });
   redirect("/sign-in");
+}
+
+export type RequestAccessState = { error?: string; message?: string };
+
+// Stops a flood of junk requests; real ones are rare.
+const MAX_PENDING_REQUESTS = 50;
+
+export async function requestAccess(
+  _prev: RequestAccessState,
+  formData: FormData,
+): Promise<RequestAccessState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const note = String(formData.get("note") ?? "").trim().slice(0, 200) || null;
+  if (!isValidEmail(email)) return { error: "Enter a valid email above first." };
+
+  const existing = await findRequest(email);
+  if (existing?.status === "approved") {
+    return { message: "You're approved! Go back and create your account." };
+  }
+  if (existing) {
+    return { message: "You've already asked. Once you're approved, come back and create your account." };
+  }
+  if ((await countPendingRequests()) >= MAX_PENDING_REQUESTS) {
+    return { error: "Too many requests right now. Try again later." };
+  }
+
+  await getDb().insert(accessRequests).values({ email, note }).onConflictDoNothing();
+  return {
+    message: "The owner will review it. Once you're approved, come back and create your account.",
+  };
 }
