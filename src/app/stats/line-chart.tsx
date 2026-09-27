@@ -48,7 +48,6 @@ function monthTicks(from: number, to: number) {
 
 export function LineChart({
   label,
-  variant = "line",
   points,
   xDomain,
   formatY,
@@ -56,8 +55,6 @@ export function LineChart({
   onActiveIndexChange,
 }: {
   label: string;
-  // "dots" suits values that jump around between a few levels, like reps.
-  variant?: "line" | "dots";
   points: Point[];
   xDomain: [number, number];
   formatY: (value: number) => string;
@@ -147,27 +144,14 @@ export function LineChart({
             </text>
           ))}
 
-          {variant === "line" ? (
-            <path
-              d={path}
-              fill="none"
-              strokeWidth={2}
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              className="stroke-[#2a78d6] dark:stroke-[#3987e5]"
-            />
-          ) : (
-            points.map((p, i) => (
-              <circle
-                key={i}
-                cx={sx(p.x)}
-                cy={sy(p.y)}
-                r={4}
-                strokeWidth={2}
-                className="fill-[#2a78d6] stroke-white dark:fill-[#3987e5] dark:stroke-zinc-900"
-              />
-            ))
-          )}
+          <path
+            d={path}
+            fill="none"
+            strokeWidth={2}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            className="stroke-[#2a78d6] dark:stroke-[#3987e5]"
+          />
 
           {last && (
             <>

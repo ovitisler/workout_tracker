@@ -120,8 +120,25 @@ export function StatsView({ entries, today }: { entries: Entry[]; today: string 
       {/* The readout for the crosshair: tap or drag on either chart. */}
       <div className="rounded-lg bg-white px-3 py-2 dark:bg-zinc-900" aria-live="polite">
         <span className="text-sm font-medium text-zinc-950 dark:text-zinc-50">{formatEntry(active)}</span>
-        <span className="text-sm text-zinc-500"> · {formatDay(active.date, today)}</span>
+        <span className="text-sm text-zinc-500">
+          {" "}· ≈ {Math.round(active.strength)} est. · {formatDay(active.date, today)}
+        </span>
       </div>
+
+      <section className="flex flex-col gap-1 rounded-lg bg-white p-3 dark:bg-zinc-900">
+        <h2 className="text-sm font-medium text-zinc-950 dark:text-zinc-50">Estimated strength (lb)</h2>
+        <p className="text-xs text-zinc-500">
+          Your estimated 1-rep max: weight and reps in one number, so it goes up when either does.
+        </p>
+        <LineChart
+          label={`Estimated one-rep max per day, ${RANGE_NAMES[range]}`}
+          points={days.map((d) => ({ x: toDayNumber(d.date), y: Math.round(d.strength) }))}
+          xDomain={xDomain}
+          formatY={(v) => String(Math.round(v))}
+          activeIndex={index}
+          onActiveIndexChange={setActiveIndex}
+        />
+      </section>
 
       <section className="flex flex-col gap-1 rounded-lg bg-white p-3 dark:bg-zinc-900">
         <h2 className="text-sm font-medium text-zinc-950 dark:text-zinc-50">Top weight (lb)</h2>
@@ -135,22 +152,9 @@ export function StatsView({ entries, today }: { entries: Entry[]; today: string 
         />
       </section>
 
-      <section className="flex flex-col gap-1 rounded-lg bg-white p-3 dark:bg-zinc-900">
-        <h2 className="text-sm font-medium text-zinc-950 dark:text-zinc-50">Reps at top weight</h2>
-        <LineChart
-          label={`Reps at the top weight per day, ${RANGE_NAMES[range]}`}
-          variant="dots"
-          points={days.map((d) => ({ x: toDayNumber(d.date), y: d.reps }))}
-          xDomain={xDomain}
-          formatY={(v) => String(v)}
-          activeIndex={index}
-          onActiveIndexChange={setActiveIndex}
-        />
-      </section>
-
       <p className="text-xs text-zinc-500">
-        Trend uses estimated strength, which combines weight and reps, so more reps at the same weight
-        counts as progress. Every entry is listed on the Log tab.
+        Estimated strength uses the Epley formula (weight × (1 + reps ÷ 30)). Every entry is listed on
+        the Log tab.
       </p>
     </div>
   );
