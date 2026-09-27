@@ -22,10 +22,10 @@ export function listEntries(userId: string, exerciseId: number) {
     .orderBy(desc(entries.date), asc(entries.id));
 }
 
-// The exercises the user logged most recently, newest first, each with its
+// The exercises the user has logged, most recently logged first, each with its
 // latest entry (the first entry of its most recent day, like the log form's
-// pre-fill).
-export async function listRecentExercises(userId: string, limit = 6) {
+// pre-fill). All of them unless `limit` is given.
+export async function listRecentExercises(userId: string, limit?: number) {
   const latest = await getDb()
     .selectDistinctOn([entries.exerciseId], {
       id: exercises.id,

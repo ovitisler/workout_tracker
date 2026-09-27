@@ -162,19 +162,22 @@ its muscle group. Custom exercises are private to you and marked "Custom".
 
 <table>
   <tr>
+    <td><img src="screenshots/stats-list.png" width="260" alt="Stats tab listing the exercises you've logged"></td>
     <td><img src="screenshots/stats.png" width="260" alt="Bench press stats over two years"></td>
     <td><img src="screenshots/stats-day.png" width="260" alt="Tapping a day on the chart"></td>
     <td><img src="screenshots/stats-dark.png" width="260" alt="Barbell curl trending down, in dark mode"></td>
   </tr>
   <tr>
+    <td>Only exercises you've logged.</td>
     <td>Two years of bench press.</td>
     <td>Tap or drag on a chart to read a day.</td>
     <td>A downward trend (and dark mode).</td>
   </tr>
 </table>
 
-Pick an exercise in the **Stats** tab (your recent ones are at the top), or tap
-the chart icon while logging it.
+The **Stats** tab lists only the exercises you've logged (most recent first, with
+what you did last), since those are the ones with something to show. Pick one,
+or tap the chart icon while logging an exercise.
 Choose a range (3 months, 6 months, 1 year or all) and you get:
 
 - **Trend**: whether you're getting stronger (↑), holding steady (→ Flat) or

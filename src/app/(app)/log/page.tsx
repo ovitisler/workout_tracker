@@ -14,7 +14,7 @@ export default async function LogPage() {
   const user = await requireUser();
   const [exercises, recent] = await Promise.all([
     listExercises(user.id),
-    listRecentExercises(user.id),
+    listRecentExercises(user.id, 6),
   ]);
 
   return (

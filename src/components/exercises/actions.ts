@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 
-import { tabPath } from "@/lib/tabs";
 
 import { addToRoutine } from "@/components/routines/actions";
 import { getDb } from "@/db";
@@ -21,7 +20,6 @@ export async function addExercise(
   const user = await requireUser();
   const name = normalizeExerciseName(String(formData.get("name") ?? ""));
   const muscleGroup = formData.get("muscleGroup");
-  const returnTo = tabPath(formData.get("tab") === "stats" ? "stats" : "log");
   const routineId = Number(formData.get("routineId")) || undefined;
 
   if (!name || name.length > 60) {
@@ -45,5 +43,5 @@ export async function addExercise(
     await addToRoutine(routineId, exerciseId);
     redirect(`/routines/${routineId}/edit`);
   }
-  redirect(`${returnTo}/${exerciseId}`);
+  redirect(`/log/${exerciseId}`);
 }

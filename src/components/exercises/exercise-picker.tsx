@@ -20,9 +20,9 @@ function matches(name: string, query: string) {
     .every((word) => haystack.includes(word));
 }
 
-// Picking an exercise either opens its screen in the Log or Stats tab, or adds
-// it to a routine.
-export type PickerMode = { tab: "log" | "stats" } | { routineId: number; alreadyAdded: number[] };
+// Picking an exercise either opens its screen in the Log tab, or adds it to a
+// routine.
+export type PickerMode = { tab: "log" } | { routineId: number; alreadyAdded: number[] };
 
 export function ExercisePicker({
   exercises,

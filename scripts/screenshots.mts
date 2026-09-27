@@ -59,8 +59,9 @@ async function openRoutine(page: Page, name: string) {
 
 async function openExercise(page: Page, tab: "log" | "stats", name: string) {
   await page.goto(`${BASE_URL}/${tab}`);
-  await page.fill("input[type=search]", name);
-  await page.locator("main li a", { hasText: new RegExp(`^${name}$`) }).click();
+  // Stats lists only logged exercises (by name, with the latest entry beside it).
+  if (tab === "log") await page.fill("input[type=search]", name);
+  await page.locator("main li a", { hasText: new RegExp(`^${name}`) }).first().click();
   await page.waitForURL(new RegExp(`/${tab}/\\d+$`));
 }
 
@@ -129,6 +130,9 @@ await page.goto(`${BASE_URL}/log`);
 await page.fill("input[type=search]", "cable pullover");
 await page.click("text=+ Add");
 await shot(page, "add-exercise");
+
+await page.goto(`${BASE_URL}/stats`);
+await shot(page, "stats-list");
 
 await openExercise(page, "stats", "Bench Press");
 await page.click("button:text-is('All')");
