@@ -98,7 +98,9 @@ export function RoutineEditor({
               Done adding
             </button>
           </div>
+          {/* Keyed on the routine's size so the search resets after each add. */}
           <ExercisePicker
+            key={items.length}
             exercises={exercises}
             mode={{ routineId: routine.id, alreadyAdded: items.map((i) => i.id) }}
           />
