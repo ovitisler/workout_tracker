@@ -66,18 +66,31 @@ queries or migrations when running locally.
 
 ## App structure
 
-- Three tabs, `/routines`, `/` (Log) and `/stats`, share `AppShell`
-  (`src/app/app-shell.tsx`); tab paths live in `src/lib/tabs.ts`. The selected
-  exercise is the `?exercise=<id>` query param and carries between Log and
-  Stats. `&routine=<id>` on the Log page adds a link back to that routine.
+- iOS-style tabbed app. Signed-in routes live in `src/app/(app)/`, whose layout
+  adds the bottom `TabBar` (`src/components/tab-bar.tsx`; tabs defined in
+  `src/lib/tabs.ts`). Each tab is a stack of URL paths:
+  - `/routines` → `/routines/[id]` → `/routines/[id]/[exerciseId]` (log from a
+    routine); plus `/routines/new` and `/routines/[id]/edit`
+  - `/log` (exercise picker) → `/log/[exerciseId]`
+  - `/stats` (exercise picker) → `/stats/[exerciseId]`
+  - `/settings`
+  `/` redirects to `/routines`.
+- Every screen renders `<Screen title back action>` (`src/components/screen.tsx`):
+  a sticky top bar with a back link to the parent path (not browser history)
+  and the content area. Top and bottom bars pad with `env(safe-area-inset-*)`
+  (`viewportFit: "cover"` in the root layout).
+- Route folders hold only pages; components and server actions are in
+  `src/components/<area>/`.
 - Routines (`routines` + `routine_exercises`, ordered by `position`) are named
   lists of exercises. A routine exercise is "done" when it has an entry dated
   today; there's no separate completion state. "Today" is the device's date, so
   anything comparing against it renders client-side (`useLocalToday`).
 - Stats math (per-day top set, estimated 1RM, trend fit, ranges, axis ticks)
   is pure and tested in `src/lib/stats.ts`. Charts are hand-rolled SVG
-  (`src/app/stats/line-chart.tsx`), no chart library; one series per chart,
-  never two y-axes.
+  (`src/components/stats/line-chart.tsx`), no chart library; one series per
+  chart, never two y-axes.
+- Accent color is blue (`blue-600` / dark `blue-500`) for links, buttons, the
+  active tab and chart lines; icons come from `lucide-react`.
 
 ## Auth
 

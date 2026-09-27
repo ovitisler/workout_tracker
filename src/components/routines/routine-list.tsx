@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
 
 import { useLocalToday } from "@/lib/use-local-today";
-
-import { createRoutine } from "./actions";
 
 type Routine = { id: number; name: string; lastLogged: (string | null)[] };
 
@@ -40,41 +37,10 @@ export function RoutineList({ routines }: { routines: Routine[] }) {
         </ul>
       ) : (
         <p className="text-sm text-zinc-500">
-          Routines are the sets of exercises you do together, like “Upper 1” or “Leg day”. Make one, add
-          exercises, and at the gym just open it and tap through.
+          Routines are the sets of exercises you do together, like “Upper 1” or “Leg day”. Tap + to
+          make one, add exercises, and at the gym just open it and tap through.
         </p>
       )}
-      <NewRoutineForm />
     </div>
-  );
-}
-
-function NewRoutineForm() {
-  const [state, formAction, pending] = useActionState(createRoutine, {});
-  return (
-    <form action={formAction} className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <input
-          name="name"
-          required
-          maxLength={40}
-          placeholder="New routine, e.g. Lower 1"
-          aria-label="New routine name"
-          autoComplete="off"
-          className="w-full min-w-0 rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-zinc-950 outline-none focus:border-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-50"
-        />
-        <button
-          disabled={pending}
-          className="shrink-0 rounded-lg bg-zinc-950 px-4 font-medium text-white disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950"
-        >
-          Create
-        </button>
-      </div>
-      {state.error && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {state.error}
-        </p>
-      )}
-    </form>
   );
 }

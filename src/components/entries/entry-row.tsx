@@ -46,7 +46,7 @@ export function EntryRow({ entry }: { entry: Entry }) {
       <div className="flex gap-2">
         <button
           disabled={busy}
-          className="flex-1 rounded-lg bg-zinc-950 px-3 py-2.5 font-medium text-white disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950"
+          className="flex-1 rounded-lg bg-blue-600 px-3 py-2.5 font-medium text-white disabled:opacity-50 dark:bg-blue-500 dark:text-white"
         >
           Save
         </button>

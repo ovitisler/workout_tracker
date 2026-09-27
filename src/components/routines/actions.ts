@@ -45,7 +45,7 @@ export async function createRoutine(
     .returning({ id: routines.id });
 
   // Straight into editing, to add exercises.
-  redirect(`/routines/${created.id}?edit=1`);
+  redirect(`/routines/${created.id}/edit`);
 }
 
 export async function renameRoutine(

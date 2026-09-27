@@ -27,8 +27,8 @@ export function listExercises(userId: string) {
     .orderBy(asc(exercises.name));
 }
 
-// The exercise in a `?exercise=<id>` query param, if the user can see it.
-export async function getSelectedExercise(
+// The exercise for an id from the URL, if it exists and the user can see it.
+export async function getExerciseFromParam(
   userId: string,
   param: string | string[] | undefined,
 ) {

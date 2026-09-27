@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 
 import { normalizeExerciseName } from "@/lib/exercise-name";
-import { tabPath, type Tab } from "@/lib/tabs";
+import { tabPath } from "@/lib/tabs";
 import type { Exercise } from "@/lib/exercises";
 import { MUSCLE_GROUP_LABELS, MUSCLE_GROUPS } from "@/lib/muscle-groups";
 
-import { addToRoutine } from "@/app/routines/actions";
+import { addToRoutine } from "@/components/routines/actions";
 
 import { addExercise } from "./actions";
 
@@ -20,9 +20,9 @@ function matches(name: string, query: string) {
     .every((word) => haystack.includes(word));
 }
 
-// Picking an exercise either opens it in a tab (Log or Stats), or adds it to a
-// routine.
-export type PickerMode = { tab: Tab } | { routineId: number; alreadyAdded: number[] };
+// Picking an exercise either opens its screen in the Log or Stats tab, or adds
+// it to a routine.
+export type PickerMode = { tab: "log" | "stats" } | { routineId: number; alreadyAdded: number[] };
 
 export function ExercisePicker({ exercises, mode }: { exercises: Exercise[]; mode: PickerMode }) {
   const [query, setQuery] = useState("");
@@ -39,7 +39,7 @@ export function ExercisePicker({ exercises, mode }: { exercises: Exercise[]; mod
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="sticky top-0 -mx-4 bg-zinc-50 px-4 py-2 dark:bg-black">
+      <div className="sticky top-[calc(env(safe-area-inset-top)+2.75rem)] z-[5] -mx-4 bg-zinc-50 px-4 py-2 dark:bg-black">
         <input
           type="search"
           value={query}
@@ -138,7 +138,7 @@ function PickerItem({ exercise, mode }: { exercise: Exercise; mode: PickerMode }
 
   if ("tab" in mode) {
     return (
-      <Link href={`${tabPath(mode.tab)}?exercise=${exercise.id}`} className={itemClass}>
+      <Link href={`${tabPath(mode.tab)}/${exercise.id}`} className={itemClass}>
         {exercise.name}
         {custom}
       </Link>

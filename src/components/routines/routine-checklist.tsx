@@ -29,14 +29,14 @@ export function RoutineChecklist({
           return (
             <li key={item.id}>
               <Link
-                href={`/?exercise=${item.id}&routine=${routineId}`}
+                href={`/routines/${routineId}/${item.id}`}
                 className="flex items-center gap-3 px-3 py-3 active:bg-zinc-100 dark:active:bg-zinc-800"
               >
                 <span
                   aria-label={isDone ? "Done today" : "Not done today"}
                   className={
                     isDone
-                      ? "flex size-6 shrink-0 items-center justify-center rounded-full bg-zinc-950 text-sm text-white dark:bg-zinc-50 dark:text-zinc-950"
+                      ? "flex size-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm text-white dark:bg-blue-500 dark:text-white"
                       : "size-6 shrink-0 rounded-full border-2 border-zinc-300 dark:border-zinc-600"
                   }
                 >

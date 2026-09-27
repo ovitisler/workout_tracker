@@ -31,9 +31,9 @@ function trendText(trend: Trend | null) {
   const percent = `${Math.round(Math.abs(trend.change) * 100)}%`;
   switch (trend.direction) {
     case "up":
-      return { value: `↑ Up ${percent}`, note: "Est. strength" };
+      return { value: `↑ ${percent}`, note: "Est. strength, up" };
     case "down":
-      return { value: `↓ Down ${percent}`, note: "Est. strength" };
+      return { value: `↓ ${percent}`, note: "Est. strength, down" };
     case "flat":
       return { value: "→ Flat", note: "Est. strength" };
   }
@@ -64,7 +64,7 @@ export function StatsView({ entries, today }: { entries: Entry[]; today: string 
   };
 
   const rangeButtons = (
-    <div className="grid grid-cols-4 gap-1" role="group" aria-label="Time range">
+    <div className="grid grid-cols-4 rounded-lg bg-zinc-200 p-0.5 dark:bg-zinc-800" role="group" aria-label="Time range">
       {RANGES.map((r) => (
         <button
           key={r}
@@ -73,8 +73,8 @@ export function StatsView({ entries, today }: { entries: Entry[]; today: string 
           onClick={() => selectRange(r)}
           className={
             r === range
-              ? "rounded-md bg-zinc-950 py-1.5 text-sm font-medium text-white dark:bg-zinc-50 dark:text-zinc-950"
-              : "rounded-md py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400"
+              ? "rounded-md bg-white py-1.5 text-sm font-semibold text-zinc-950 shadow-sm dark:bg-zinc-600 dark:text-zinc-50"
+              : "rounded-md py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-300"
           }
         >
           {r}

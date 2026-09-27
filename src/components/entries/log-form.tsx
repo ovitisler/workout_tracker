@@ -37,7 +37,7 @@ export function LogForm({
       )}
       <button
         disabled={pending}
-        className="rounded-lg bg-zinc-950 px-3 py-3 font-medium text-white disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950"
+        className="rounded-lg bg-blue-600 px-3 py-3 font-medium text-white disabled:opacity-50 dark:bg-blue-500 dark:text-white"
       >
         {pending ? "Saving…" : "Save"}
       </button>

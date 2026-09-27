@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useState } from "react";
 
-import { ExercisePicker } from "@/app/exercises/exercise-picker";
+import { ExercisePicker } from "@/components/exercises/exercise-picker";
 import type { Exercise } from "@/lib/exercises";
 import type { RoutineExercise } from "@/lib/routines";
 
-import { deleteRoutine, moveInRoutine, removeFromRoutine, renameRoutine } from "../actions";
+import { deleteRoutine, moveInRoutine, removeFromRoutine, renameRoutine } from "./actions";
 
 const smallButton =
   "rounded-md border border-zinc-300 px-2.5 py-1 text-zinc-950 disabled:opacity-30 dark:border-zinc-700 dark:text-zinc-50";
@@ -115,12 +114,6 @@ export function RoutineEditor({
       )}
 
       <div className="flex flex-col gap-3 pt-4">
-        <Link
-          href={`/routines/${routine.id}`}
-          className="rounded-lg bg-zinc-950 py-3 text-center font-medium text-white dark:bg-zinc-50 dark:text-zinc-950"
-        >
-          Done editing
-        </Link>
         <form
           action={deleteRoutine.bind(null, routine.id)}
           onSubmit={(e) => {

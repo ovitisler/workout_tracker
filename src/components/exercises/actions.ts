@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { tabPath } from "@/lib/tabs";
 
-import { addToRoutine } from "@/app/routines/actions";
+import { addToRoutine } from "@/components/routines/actions";
 import { getDb } from "@/db";
 import { exercises } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
@@ -43,7 +43,7 @@ export async function addExercise(
 
   if (routineId) {
     await addToRoutine(routineId, exerciseId);
-    redirect(`/routines/${routineId}?edit=1`);
+    redirect(`/routines/${routineId}/edit`);
   }
-  redirect(`${returnTo}?exercise=${exerciseId}`);
+  redirect(`${returnTo}/${exerciseId}`);
 }
