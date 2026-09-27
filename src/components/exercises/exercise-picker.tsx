@@ -24,7 +24,16 @@ function matches(name: string, query: string) {
 // it to a routine.
 export type PickerMode = { tab: "log" | "stats" } | { routineId: number; alreadyAdded: number[] };
 
-export function ExercisePicker({ exercises, mode }: { exercises: Exercise[]; mode: PickerMode }) {
+export function ExercisePicker({
+  exercises,
+  mode,
+  top,
+}: {
+  exercises: Exercise[];
+  mode: PickerMode;
+  // Shown under the search box while not searching (e.g. recent exercises).
+  top?: React.ReactNode;
+}) {
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
   const [state, formAction, pending] = useActionState(addExercise, {});
@@ -103,6 +112,8 @@ export function ExercisePicker({ exercises, mode }: { exercises: Exercise[]; mod
           )}
         </div>
       )}
+
+      {!typedName && top}
 
       {MUSCLE_GROUPS.map((group) => {
         const items = filtered.filter((e) => e.muscleGroup === group);

@@ -33,7 +33,7 @@ export default async function RoutineExercisePage({
     >
       <div className="flex flex-col gap-4">
         <ExerciseMeta exercise={exercise} />
-        <ExerciseLog userId={user.id} exerciseId={exercise.id} />
+        <ExerciseLog userId={user.id} exerciseId={exercise.id} exerciseName={exercise.name} />
       </div>
     </Screen>
   );

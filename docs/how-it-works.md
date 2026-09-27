@@ -107,17 +107,22 @@ them.
 <table>
   <tr>
     <td><img src="screenshots/log-exercise.png" width="260" alt="Logging Overhead Press"></td>
+    <td><img src="screenshots/log-first-time.png" width="260" alt="Logging an exercise for the first time"></td>
     <td><img src="screenshots/edit-entry.png" width="260" alt="Editing a past entry"></td>
   </tr>
   <tr>
     <td>The form is pre-filled from last time; history is below.</td>
+    <td>The first time, a note explains what to do.</td>
     <td>Tap any past entry to fix or delete it.</td>
   </tr>
 </table>
 
-Open an exercise from a routine or from the **Log** tab. You get:
+Open an exercise from a routine or from the **Log** tab. The Log tab lists your
+**Recent** exercises at the top, with what you did last, so the ones you do
+often are one tap away. You get:
 
-- **The form**, pre-filled with your most recent entry. Use − / + to adjust
+- **The form**, pre-filled with your most recent entry. The first time you log an
+  exercise, a short note explains what to enter. Use − / + to adjust
   (weight moves in 5 lb steps, reps and sets by 1) or type any value, like
   137.5. **Sets** is optional; blank means a single set.
 - **The date**, which defaults to today on your phone. Change it to log
@@ -140,7 +145,7 @@ Weights are in pounds.
     <td><img src="screenshots/add-exercise.png" width="260" alt="Adding a custom exercise"></td>
   </tr>
   <tr>
-    <td>About 85 common exercises, grouped by muscle.</td>
+    <td>Your recent exercises first, then about 85 more, grouped by muscle.</td>
     <td>Not there? Type it and add it.</td>
   </tr>
 </table>
@@ -168,7 +173,8 @@ its muscle group. Custom exercises are private to you and marked "Custom".
   </tr>
 </table>
 
-Pick an exercise in the **Stats** tab, or tap the chart icon while logging it.
+Pick an exercise in the **Stats** tab (your recent ones are at the top), or tap
+the chart icon while logging it.
 Choose a range (3 months, 6 months, 1 year or all) and you get:
 
 - **Trend**: whether you're getting stronger (↑), holding steady (→ Flat) or

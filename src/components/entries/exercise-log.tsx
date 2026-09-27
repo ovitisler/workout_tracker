@@ -7,9 +7,11 @@ import { formatDay, groupByDate, localToday } from "@/lib/entry-format";
 export async function ExerciseLog({
   userId,
   exerciseId,
+  exerciseName,
 }: {
   userId: string;
   exerciseId: number;
+  exerciseName: string;
 }) {
   const history = await listEntries(userId, exerciseId);
   // Pre-fill from the first entry of the most recent day: usually the main
@@ -20,6 +22,16 @@ export async function ExerciseLog({
 
   return (
     <>
+      {!latest && (
+        <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-950 dark:bg-blue-950 dark:text-blue-100">
+          <p className="font-semibold">First time logging {exerciseName}</p>
+          <p>
+            Enter the weight and reps you did (sets are optional; blank means 1) and tap{" "}
+            <span className="font-semibold">Save</span>. Next time, the form is filled in with what
+            you did last, so you just adjust and save.
+          </p>
+        </div>
+      )}
       <LogForm
         key={exerciseId}
         exerciseId={exerciseId}

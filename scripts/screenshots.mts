@@ -121,6 +121,11 @@ await shot(page, "edit-routine");
 await page.goto(`${BASE_URL}/log`);
 await shot(page, "exercises");
 
+await openExercise(page, "log", "Cable Crossover");
+await shot(page, "log-first-time");
+
+await page.goto(`${BASE_URL}/log`);
+
 await page.fill("input[type=search]", "cable pullover");
 await page.click("text=+ Add");
 await shot(page, "add-exercise");
