@@ -29,11 +29,16 @@ Group the exercises you always do together into **routines** (like "Push" or
 
 <img src="screenshots/sign-in.png" width="260" alt="Sign-in screen" align="right">
 
-Open the app in your phone's browser, tap **Create an account** under the sign-in
-form, and enter your email and a password (8+ characters; your phone can
-suggest one). Sign-up is invite-only. If your email isn't on the list yet, you'll
-be asked to **Request access** instead: add a note saying who you are, and once
-the owner approves it, come back and create your account.
+Open the app in your phone's browser and tap **Create an account** under the
+sign-in form. Enter your email and tap **Continue**. Sign-up is invite-only, so the
+app checks your email first:
+
+- **You're on the list:** choose a password (8+ characters; your phone can
+  suggest one) and tap **Create account**.
+- **You're not on the list yet:** you're asked to **Request access** instead. Add a
+  note saying who you are, and once the owner approves it, come back and create
+  your account.
+- **You already have an account:** you're sent to **Sign in**.
 
 To use it like an app, add it to your home screen: in Safari, tap **Share →
 Add to Home Screen**. It opens full screen, with its own icon, and stays signed
