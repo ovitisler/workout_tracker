@@ -1,13 +1,13 @@
 import "server-only";
 
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { entries } from "@/db/schema";
 
 export type Entry = Awaited<ReturnType<typeof listEntries>>[number];
 
-// Newest first: by day, then most recently added within a day.
+// Newest day first; within a day, in the order they were logged.
 export function listEntries(userId: string, exerciseId: number) {
   return getDb()
     .select({
@@ -19,5 +19,5 @@ export function listEntries(userId: string, exerciseId: number) {
     })
     .from(entries)
     .where(and(eq(entries.userId, userId), eq(entries.exerciseId, exerciseId)))
-    .orderBy(desc(entries.date), desc(entries.id));
+    .orderBy(desc(entries.date), asc(entries.id));
 }

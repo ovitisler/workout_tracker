@@ -28,6 +28,7 @@ npm run build
 npm run db:generate  # schema.ts changes → new SQL migration in drizzle/
 npm run db:migrate   # apply migrations to the DB in .env.local
 npm run db:studio
+npm run seed-demo    # (re)create demo@example.com with ~2 years of fake history
 ```
 
 Local env comes from `vercel env pull .env.local` (git-ignored). It currently

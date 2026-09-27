@@ -46,6 +46,17 @@ production stay in sync with the schema.
 
 `GET /api/health` returns `{"ok":true,"db":"up"}` when the app can reach the database.
 
+### Demo data
+
+```bash
+npm run seed-demo
+```
+
+Creates `demo@example.com` with about two years of made-up history across 13
+exercises (asks for a password to set). Handy for trying the history and stats
+screens. Re-running it deletes and re-creates the demo user. It writes to the
+database in `.env.local`.
+
 ## Accounts
 
 Sign-up is invite-only: only emails listed in the `ALLOWED_EMAILS` environment

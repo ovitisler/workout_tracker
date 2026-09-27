@@ -69,6 +69,8 @@ async function ExerciseLog({
   exerciseId: number;
 }) {
   const history = await listEntries(userId, exerciseId);
+  // Pre-fill from the first entry of the most recent day: usually the main
+  // working sets rather than a last, weaker set.
   const latest = history[0];
   // Only used to decide whether to show the year on old entries.
   const today = localToday();
