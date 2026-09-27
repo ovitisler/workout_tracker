@@ -31,6 +31,14 @@ export async function findRequest(email: string) {
   return row;
 }
 
+export async function hasAccount(email: string) {
+  const [row] = await getDb()
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(sql`lower(${user.email})`, email.toLowerCase()));
+  return row !== undefined;
+}
+
 export async function countPendingRequests() {
   const [row] = await getDb()
     .select({ n: count() })

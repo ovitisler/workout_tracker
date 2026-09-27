@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 import { getDb } from "@/db";
 import { accessRequests } from "@/db/schema";
-import { countPendingRequests, findRequest } from "@/lib/access";
+import { canSignUp, countPendingRequests, findRequest, hasAccount } from "@/lib/access";
 import { getAuth } from "@/lib/auth";
 import { isValidEmail } from "@/lib/email-list";
 
@@ -50,6 +50,24 @@ export async function signIn(
   }
 
   redirect("/");
+}
+
+export type EmailCheck =
+  | "allowed" // go on to choose a password
+  | "has-account" // sign in instead
+  | "requested" // already asked for access, not approved (yet)
+  | "not-allowed" // can request access
+  | "invalid";
+
+// First step of creating an account: whether this email can, before asking
+// for a password. The sign-up hook still enforces the rules on the real
+// sign-up, so this is only for a friendlier flow.
+export async function checkSignUpEmail(rawEmail: string): Promise<EmailCheck> {
+  const email = rawEmail.trim().toLowerCase();
+  if (!isValidEmail(email)) return "invalid";
+  if (await hasAccount(email)) return "has-account";
+  if (await canSignUp(email)) return "allowed";
+  return (await findRequest(email)) ? "requested" : "not-allowed";
 }
 
 export async function signOut() {
