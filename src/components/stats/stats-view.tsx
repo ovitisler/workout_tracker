@@ -31,9 +31,9 @@ function trendText(trend: Trend | null) {
   const percent = `${Math.round(Math.abs(trend.change) * 100)}%`;
   switch (trend.direction) {
     case "up":
-      return { value: `↑ ${percent}`, note: "Est. strength, up" };
+      return { value: `↑ ${percent}`, note: "Est. strength" };
     case "down":
-      return { value: `↓ ${percent}`, note: "Est. strength, down" };
+      return { value: `↓ ${percent}`, note: "Est. strength" };
     case "flat":
       return { value: "→ Flat", note: "Est. strength" };
   }

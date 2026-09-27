@@ -1,11 +1,12 @@
 // Creates (or re-creates) a demo user with ~2 years of made-up training
-// history, for trying the app with lots of data.
+// history and three routines, for trying the app with lots of data.
 //
 //   npm run seed-demo
 //
 // Writes to the database in .env.local (or DATABASE_URL). Deletes any existing
-// demo user and all their data first. The password comes from DEMO_PASSWORD or
-// is asked for; it's never stored in the repo.
+// user with that email and all their data first. The email is DEMO_EMAIL
+// (default demo@example.com); the password comes from DEMO_PASSWORD or is asked
+// for, and is never stored in the repo.
 
 import { existsSync } from "node:fs";
 import { createInterface } from "node:readline";
@@ -20,7 +21,7 @@ import { localToday } from "../src/lib/entry-format";
 // getDb() reads DATABASE_URL on first use, so loading it here is early enough.
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
-const EMAIL = "demo@example.com";
+const EMAIL = process.env.DEMO_EMAIL || "demo@example.com";
 const DAYS = 730;
 
 type Pattern = "steady" | "plateau" | "decline";
@@ -38,6 +39,7 @@ type Plan = {
 
 const PLANS: Plan[] = [
   { name: "Bench Press", day: 1, start: 135, end: 205, step: 5, reps: [5, 8], sets: 3, pattern: "steady" },
+  { name: "Incline Dumbbell Press", day: 1, start: 40, end: 65, step: 5, reps: [8, 10], sets: 3, pattern: "steady" },
   { name: "Overhead Press", day: 1, start: 85, end: 115, step: 5, reps: [5, 8], sets: 3, pattern: "plateau" },
   { name: "Triceps Pushdown", day: 1, start: 40, end: 70, step: 5, reps: [10, 12], sets: 3, pattern: "steady" },
   { name: "Lateral Raise", day: 1, start: 15, end: 25, step: 2.5, reps: [12, 15], sets: 3, pattern: "steady" },
@@ -48,7 +50,6 @@ const PLANS: Plan[] = [
   { name: "Deadlift", day: 5, start: 185, end: 315, step: 5, reps: [3, 5], sets: null, pattern: "steady" },
   { name: "Barbell Row", day: 5, start: 115, end: 165, step: 5, reps: [6, 10], sets: 3, pattern: "steady" },
   { name: "Lat Pulldown", day: 5, start: 100, end: 150, step: 5, reps: [8, 12], sets: 3, pattern: "steady" },
-  { name: "Incline Dumbbell Press", day: 5, start: 40, end: 65, step: 5, reps: [8, 10], sets: 3, pattern: "steady" },
   { name: "Barbell Curl", day: 5, start: 60, end: 80, step: 5, reps: [8, 12], sets: 3, pattern: "decline" },
 ];
 
@@ -197,7 +198,7 @@ for (let i = 0; i < rows.length; i += 500) {
 }
 
 // One routine per training day, exercises in plan order.
-const DAY_NAMES = { 1: "Monday", 3: "Wednesday", 5: "Friday" } as const;
+const DAY_NAMES = { 1: "Push", 3: "Legs", 5: "Pull" } as const;
 for (const [position, day] of ([1, 3, 5] as const).entries()) {
   const [routine] = await db
     .insert(routines)

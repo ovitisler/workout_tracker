@@ -28,7 +28,8 @@ npm run build
 npm run db:generate  # schema.ts changes → new SQL migration in drizzle/
 npm run db:migrate   # apply migrations to the DB in .env.local
 npm run db:studio
-npm run seed-demo    # (re)create demo@example.com with ~2 years of fake history
+npm run seed-demo    # (re)create demo@example.com (or DEMO_EMAIL) with ~2 years of fake history
+npm run screenshots  # regenerate docs/screenshots/ (see README; needs a running app + seeded account)
 ```
 
 Local env comes from `vercel env pull .env.local` (git-ignored). It currently
@@ -63,6 +64,9 @@ queries or migrations when running locally.
 - Each exercise has one `muscle_group` (Postgres enum). The list lives in
   `src/lib/muscle-groups.ts` (client-safe, also used by the schema); changing it
   needs a migration.
+
+User-facing docs live in `docs/how-it-works.md`, with screenshots from
+`scripts/screenshots.mts`. When a UI change makes them stale, update both.
 
 ## App structure
 
