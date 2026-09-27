@@ -12,14 +12,11 @@ export function isAdmin(email: string) {
   return parseEmailList(process.env.ADMIN_EMAILS).includes(email.toLowerCase());
 }
 
-// Sign-up is invite-only: an email can create an account if it's in
-// ALLOWED_EMAILS or ADMIN_EMAILS, or an admin approved its access request.
+// Sign-up is invite-only: an email can create an account if it's an admin's,
+// or an admin approved its access request.
 export async function canSignUp(email: string) {
-  const normalized = email.toLowerCase();
-  if (parseEmailList(process.env.ALLOWED_EMAILS).includes(normalized) || isAdmin(normalized)) {
-    return true;
-  }
-  const request = await findRequest(normalized);
+  if (isAdmin(email)) return true;
+  const request = await findRequest(email);
   return request?.status === "approved";
 }
 

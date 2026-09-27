@@ -1,5 +1,5 @@
-// Parses a comma-separated list of emails (like the ALLOWED_EMAILS and
-// ADMIN_EMAILS environment variables) into lowercase addresses.
+// Parses a comma-separated list of emails (like the ADMIN_EMAILS environment
+// variable) into lowercase addresses.
 export function parseEmailList(value: string | undefined) {
   return (value ?? "")
     .split(",")

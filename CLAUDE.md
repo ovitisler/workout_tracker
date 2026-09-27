@@ -109,8 +109,9 @@ User-facing docs live in `docs/how-it-works.md`, with screenshots from
   the security boundary. Pages and actions must call `requireUser()`.
 - Sign-up is invite-only, enforced by a `databaseHooks.user.create.before`
   hook calling `canSignUp()` (`src/lib/access.ts`): allowed if the email is in
-  `ALLOWED_EMAILS` or `ADMIN_EMAILS` (comma-separated env vars) or has an
-  approved row in `access_requests`. Refused sign-ups can request access from
+  `ADMIN_EMAILS` (comma-separated env var) or has an approved row in
+  `access_requests`. There's no separate allowlist; to let someone in, approve
+  (or insert) an `access_requests` row. Refused sign-ups can request access from
   the sign-in page; admins review requests at `/settings/access-requests`.
 - Base URL is resolved per request from `localhost:*` and Vercel's
   `VERCEL_URL` / `VERCEL_BRANCH_URL` / `VERCEL_PROJECT_PRODUCTION_URL`, so
