@@ -71,6 +71,9 @@ then `vercel env pull .env.local` to get them locally):
 | `BETTER_AUTH_SECRET` | Production, Preview, Development | Output of `openssl rand -base64 32`     |
 | `ALLOWED_EMAILS`     | Production, Preview, Development | e.g. `you@example.com,friend@example.com` |
 
+`ALLOWED_EMAILS` isn't a secret: save it as a normal (not **Sensitive**) variable so
+you can see and edit the list later. After changing it, redeploy for it to take effect.
+
 There's no password reset yet (it needs an email provider).
 
 ## Deploying your own copy
