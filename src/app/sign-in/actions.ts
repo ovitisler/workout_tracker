@@ -72,7 +72,7 @@ export async function requestAccess(
 
   const existing = await findRequest(email);
   if (existing?.status === "approved") {
-    return { message: "You're approved! Tap Create account." };
+    return { message: "You're approved! Go back and create your account." };
   }
   if (existing) {
     return { message: "You've already asked. The owner will review it." };
