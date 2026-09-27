@@ -68,10 +68,11 @@ them.
   </tr>
 </table>
 
-- **Start from a template** to get going in one tap: **Push / Pull / Legs**
+- **Start from a template** to get going quickly: **Push / Pull / Legs**
   (3 routines) or **Upper / Lower** (4 routines), filled with common exercises.
-  Edit them however you like afterwards. Templates are on the empty Routines
-  screen and under **+**.
+  Tapping one shows exactly which routines and exercises it adds; tap **Add these
+  routines** to add them, then edit them however you like. Templates are on the
+  empty Routines screen and under **+**.
 - **Or create one yourself** with **+** (or **Create your first routine**), then
   add exercises: search, and tap each one.
 - **The list** shows each routine's exercises and when you **last did it**, so you
@@ -81,13 +82,25 @@ them.
   logged something for it today, it gets a ✓, and the routine shows "2 of 5 done
   today". There's nothing to tick by hand, and it resets automatically the next
   day.
-- **Edit** (top right) to rename the routine, reorder exercises with ↑ ↓, remove
-  them with ✕, add more, or delete the routine. Changes save immediately.
+- **Edit routine** (the button under the list, or **Edit** at the top right) to
+  rename the routine, reorder exercises with ↑ ↓, remove them with ✕, add more,
+  or delete the routine. Changes save immediately.
   Deleting a routine never deletes what you've logged.
 - The same exercise can be in several routines (Squat in both "Lower 1" and
   "Lower 2", say).
 
-<img src="screenshots/edit-routine.png" width="260" alt="Editing a routine">
+<table>
+  <tr>
+    <td><img src="screenshots/template.png" width="260" alt="Previewing the Push / Pull / Legs template"></td>
+    <td><img src="screenshots/routines-added.png" width="260" alt="Routines just added from a template"></td>
+    <td><img src="screenshots/edit-routine.png" width="260" alt="Editing a routine"></td>
+  </tr>
+  <tr>
+    <td>A template shows what it adds first.</td>
+    <td>Then confirms what was added.</td>
+    <td>Edit any routine to make it yours.</td>
+  </tr>
+</table>
 
 ## Logging
 

@@ -85,8 +85,12 @@ await shot(page, "sign-in");
 await signIn(page);
 await shot(page, "routines-empty");
 
-await page.locator("main button", { hasText: "Push / Pull / Legs" }).click();
-await page.locator("main a", { hasText: "Legs" }).waitFor();
+await page.locator("main a", { hasText: "Push / Pull / Legs" }).click();
+await page.waitForURL(/\/routines\/templates\//);
+await shot(page, "template");
+await page.click("button:has-text('Add these')");
+await page.waitForURL(/\/routines\?added=/);
+await shot(page, "routines-added");
 
 await page.goto(`${BASE_URL}/routines/new`);
 await shot(page, "new-routine");

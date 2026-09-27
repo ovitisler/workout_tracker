@@ -56,7 +56,8 @@ export async function createRoutinesFromTemplate(templateId: string) {
   const template = findTemplate(templateId);
   if (!template) return;
   await applyRoutineTemplate(user.id, template);
-  redirect("/routines");
+  // The list shows a note about what was just added.
+  redirect(`/routines?added=${template.id}`);
 }
 
 export async function renameRoutine(

@@ -21,7 +21,7 @@ export function RoutineChecklist({
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm text-zinc-500" aria-live="polite">
-        {today ? `${done} of ${items.length} done today` : " "}
+        {today ? `${done} of ${items.length} done today · tap an exercise to log it` : " "}
       </p>
       <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
         {items.map((item) => {

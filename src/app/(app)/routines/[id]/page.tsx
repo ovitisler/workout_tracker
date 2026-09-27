@@ -1,3 +1,4 @@
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -31,7 +32,19 @@ export default async function RoutinePage({ params }: PageProps<"/routines/[id]"
           .
         </p>
       ) : (
-        <RoutineChecklist routineId={routine.id} items={items} />
+        <div className="flex flex-col gap-6">
+          <RoutineChecklist routineId={routine.id} items={items} />
+          <Link
+            href={`/routines/${routine.id}/edit`}
+            className="flex items-center justify-center gap-2 rounded-lg border border-zinc-300 py-3 font-medium text-zinc-950 active:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-50 dark:active:bg-zinc-900"
+          >
+            <Pencil className="size-4" aria-hidden />
+            Edit routine
+          </Link>
+          <p className="-mt-4 text-center text-xs text-zinc-500">
+            Rename it, or add, remove and reorder exercises.
+          </p>
+        </div>
       )}
     </Screen>
   );

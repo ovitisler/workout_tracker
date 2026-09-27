@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, ListChecks } from "lucide-react";
+import { CircleCheck, ChevronRight, ListChecks, X } from "lucide-react";
 import Link from "next/link";
 
 import { formatDay } from "@/lib/entry-format";
@@ -17,13 +17,41 @@ type Routine = {
 };
 
 
-export function RoutineList({ routines }: { routines: Routine[] }) {
+// "Push, Pull and Legs"
+function listNames(names: string[]) {
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names.at(-1)}` : names[0];
+}
+
+export function RoutineList({
+  routines,
+  justAdded,
+}: {
+  routines: Routine[];
+  // Names of routines just added from a template, to confirm what happened.
+  justAdded?: string[];
+}) {
   const today = useLocalToday();
 
   if (routines.length === 0) return <EmptyState />;
 
   return (
-    <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
+    <div className="flex flex-col gap-4">
+      {justAdded && (
+        <div
+          role="status"
+          className="flex gap-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-950 dark:bg-blue-950 dark:text-blue-100"
+        >
+          <CircleCheck className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />
+          <p className="flex-1">
+            Added {listNames(justAdded)}. Open one to use it at the gym, and tap{" "}
+            <span className="font-semibold">Edit</span> inside to change its exercises.
+          </p>
+          <Link href="/routines" aria-label="Dismiss" className="shrink-0 text-blue-600 dark:text-blue-400">
+            <X className="size-5" aria-hidden />
+          </Link>
+        </div>
+      )}
+      <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
       {routines.map((routine) => {
         const total = routine.lastLogged.length;
         const done = today ? routine.lastLogged.filter((date) => date === today).length : 0;
@@ -59,7 +87,8 @@ export function RoutineList({ routines }: { routines: Routine[] }) {
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </div>
   );
 }
 
