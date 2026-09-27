@@ -9,16 +9,8 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 
 import { getDb } from "@/db";
+import { canSignUp } from "@/lib/access";
 import * as schema from "@/db/schema";
-
-// Comma-separated emails allowed to create an account. If unset, nobody can
-// sign up. Existing users can always sign in.
-function allowedEmails() {
-  return (process.env.ALLOWED_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-}
 
 // Hosts the app may be served from. Vercel sets these automatically for every
 // deployment, so production, previews and localhost work without configuring
@@ -44,9 +36,9 @@ function createAuth() {
       user: {
         create: {
           before: async (user) => {
-            if (!allowedEmails().includes(user.email.toLowerCase())) {
+            if (!(await canSignUp(user.email))) {
               throw new APIError("FORBIDDEN", {
-                message: "Sign-up is invite-only. Ask the owner to add your email.",
+                message: "Sign-up is invite-only, and this email isn't on the list yet.",
               });
             }
           },

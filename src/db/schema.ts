@@ -180,3 +180,24 @@ export const routineExercises = pgTable(
   },
   (t) => [primaryKey({ columns: [t.routineId, t.exerciseId] })],
 );
+
+export const accessRequestStatus = pgEnum("access_request_status", [
+  "pending",
+  "approved",
+  "denied",
+]);
+
+// People asking to be let in (sign-up is invite-only). An approved email can
+// create an account; admins review requests in Settings.
+export const accessRequests = pgTable(
+  "access_requests",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    email: text().notNull(),
+    note: text(),
+    status: accessRequestStatus().notNull().default("pending"),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    reviewedAt: timestamp({ withTimezone: true }),
+  },
+  (t) => [uniqueIndex("access_requests_email_unique").on(sql`lower(${t.email})`)],
+);

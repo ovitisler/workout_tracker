@@ -50,6 +50,13 @@
       "when": 1790471366955,
       "tag": "0006_left_wallow",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790474403478,
+      "tag": "0007_careless_paibok",
+      "breakpoints": true
     }
   ]
 }
