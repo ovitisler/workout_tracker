@@ -53,7 +53,7 @@ npm run seed-demo
 ```
 
 Creates `demo@example.com` with about two years of made-up history across 13
-exercises (asks for a password to set). Handy for trying the history and stats
+exercises, plus three routines (asks for a password to set). Handy for trying the history and stats
 screens. Re-running it deletes and re-creates the demo user. It writes to the
 database in `.env.local`.
 

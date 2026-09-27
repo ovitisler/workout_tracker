@@ -66,9 +66,14 @@ queries or migrations when running locally.
 
 ## App structure
 
-- Two tabs, `/` (Log) and `/stats`, share `AppShell` (`src/app/app-shell.tsx`);
-  the selected exercise is the `?exercise=<id>` query param and carries across
-  tabs. Tab paths live in `src/lib/tabs.ts`.
+- Three tabs, `/routines`, `/` (Log) and `/stats`, share `AppShell`
+  (`src/app/app-shell.tsx`); tab paths live in `src/lib/tabs.ts`. The selected
+  exercise is the `?exercise=<id>` query param and carries between Log and
+  Stats. `&routine=<id>` on the Log page adds a link back to that routine.
+- Routines (`routines` + `routine_exercises`, ordered by `position`) are named
+  lists of exercises. A routine exercise is "done" when it has an entry dated
+  today; there's no separate completion state. "Today" is the device's date, so
+  anything comparing against it renders client-side (`useLocalToday`).
 - Stats math (per-day top set, estimated 1RM, trend fit, ranges, axis ticks)
   is pure and tested in `src/lib/stats.ts`. Charts are hand-rolled SVG
   (`src/app/stats/line-chart.tsx`), no chart library; one series per chart,

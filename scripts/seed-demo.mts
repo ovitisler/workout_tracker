@@ -14,7 +14,7 @@ import { generateRandomString, hashPassword } from "better-auth/crypto";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 import { getDb } from "../src/db";
-import { account, entries, exercises, user } from "../src/db/schema";
+import { account, entries, exercises, routineExercises, routines, user } from "../src/db/schema";
 import { localToday } from "../src/lib/entry-format";
 
 // getDb() reads DATABASE_URL on first use, so loading it here is early enough.
@@ -196,4 +196,22 @@ for (let i = 0; i < rows.length; i += 500) {
   await db.insert(entries).values(rows.slice(i, i + 500));
 }
 
-console.log(`Created ${EMAIL} with ${rows.length} entries across ${PLANS.length} exercises.`);
+// One routine per training day, exercises in plan order.
+const DAY_NAMES = { 1: "Monday", 3: "Wednesday", 5: "Friday" } as const;
+for (const [position, day] of ([1, 3, 5] as const).entries()) {
+  const [routine] = await db
+    .insert(routines)
+    .values({ userId, name: DAY_NAMES[day], position })
+    .returning({ id: routines.id });
+  await db.insert(routineExercises).values(
+    PLANS.filter((p) => p.day === day).map((p, i) => ({
+      routineId: routine.id,
+      exerciseId: exerciseIds.get(p.name)!,
+      position: i,
+    })),
+  );
+}
+
+console.log(
+  `Created ${EMAIL} with ${rows.length} entries across ${PLANS.length} exercises, and 3 routines.`,
+);

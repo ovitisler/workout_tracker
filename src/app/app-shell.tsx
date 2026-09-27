@@ -33,11 +33,11 @@ export function AppShell({
       </header>
 
       <nav className="mx-auto w-full max-w-lg px-4 pb-2">
-        <div className="grid grid-cols-2 rounded-lg bg-zinc-200 p-1 dark:bg-zinc-800">
+        <div className="grid grid-cols-3 rounded-lg bg-zinc-200 p-1 dark:bg-zinc-800">
           {TABS.map((t) => (
             <Link
               key={t.tab}
-              href={t.path + query}
+              href={t.tab === "routines" ? t.path : t.path + query}
               aria-current={t.tab === tab ? "page" : undefined}
               className={
                 t.tab === tab

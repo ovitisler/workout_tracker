@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { AppShell, SelectedExercise } from "@/app/app-shell";
 import { EntryRow } from "@/app/entries/entry-row";
 import { LogForm } from "@/app/entries/log-form";
@@ -6,20 +8,34 @@ import { requireUser } from "@/lib/auth";
 import { listEntries } from "@/lib/entries";
 import { formatDay, groupByDate, localToday } from "@/lib/entry-format";
 import { getSelectedExercise, listExercises } from "@/lib/exercises";
+import { getRoutine } from "@/lib/routines";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const user = await requireUser();
-  const selected = await getSelectedExercise(user.id, (await searchParams).exercise);
+  const params = await searchParams;
+  const selected = await getSelectedExercise(user.id, params.exercise);
+  // Opened from a routine: link back to it.
+  const routineId = Number(params.routine);
+  const routine =
+    selected && Number.isInteger(routineId) ? await getRoutine(user.id, routineId) : undefined;
 
   return (
     <AppShell tab="log" exerciseId={selected?.id}>
       {selected ? (
         <div className="flex flex-col gap-4 pt-2">
+          {routine && (
+            <Link
+              href={`/routines/${routine.id}`}
+              className="text-sm font-medium text-zinc-600 underline dark:text-zinc-400"
+            >
+              ← {routine.name}
+            </Link>
+          )}
           <SelectedExercise exercise={selected} tab="log" />
           <ExerciseLog userId={user.id} exerciseId={selected.id} />
         </div>
       ) : (
-        <ExercisePicker exercises={await listExercises(user.id)} tab="log" />
+        <ExercisePicker exercises={await listExercises(user.id)} mode={{ tab: "log" }} />
       )}
     </AppShell>
   );

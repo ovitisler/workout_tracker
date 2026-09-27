@@ -29,7 +29,7 @@ export default async function StatsPage({ searchParams }: PageProps<"/stats">) {
           />
         </div>
       ) : (
-        <ExercisePicker exercises={await listExercises(user.id)} tab="stats" />
+        <ExercisePicker exercises={await listExercises(user.id)} mode={{ tab: "stats" }} />
       )}
     </AppShell>
   );

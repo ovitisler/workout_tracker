@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 
-import { formatWeight, localToday } from "@/lib/entry-format";
+import { formatWeight } from "@/lib/entry-format";
+import { useLocalToday } from "@/lib/use-local-today";
 
 export type EntryDefaults = {
   date?: string;
@@ -16,16 +17,6 @@ const inputClass =
 
 const stepButtonClass =
   "shrink-0 rounded-lg border border-zinc-300 px-3 text-lg text-zinc-950 active:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-50 dark:active:bg-zinc-800";
-
-// Today's date comes from the device (its timezone), so it's only known in the
-// browser. The server renders an empty date and the browser fills it in.
-function useLocalToday() {
-  return useSyncExternalStore(
-    () => () => {},
-    localToday,
-    () => "",
-  );
-}
 
 function step(value: string, delta: number, min: number) {
   const number = Number(value || 0);

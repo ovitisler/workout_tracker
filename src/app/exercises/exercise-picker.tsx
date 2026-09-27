@@ -8,6 +8,8 @@ import { tabPath, type Tab } from "@/lib/tabs";
 import type { Exercise } from "@/lib/exercises";
 import { MUSCLE_GROUP_LABELS, MUSCLE_GROUPS } from "@/lib/muscle-groups";
 
+import { addToRoutine } from "@/app/routines/actions";
+
 import { addExercise } from "./actions";
 
 function matches(name: string, query: string) {
@@ -18,7 +20,11 @@ function matches(name: string, query: string) {
     .every((word) => haystack.includes(word));
 }
 
-export function ExercisePicker({ exercises, tab }: { exercises: Exercise[]; tab: Tab }) {
+// Picking an exercise either opens it in a tab (Log or Stats), or adds it to a
+// routine.
+export type PickerMode = { tab: Tab } | { routineId: number; alreadyAdded: number[] };
+
+export function ExercisePicker({ exercises, mode }: { exercises: Exercise[]; mode: PickerMode }) {
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
   const [state, formAction, pending] = useActionState(addExercise, {});
@@ -60,7 +66,11 @@ export function ExercisePicker({ exercises, tab }: { exercises: Exercise[]; tab:
           ) : (
             <form action={formAction} className="flex flex-col gap-3">
               <input type="hidden" name="name" value={typedName} />
-              <input type="hidden" name="tab" value={tab} />
+              {"tab" in mode ? (
+                <input type="hidden" name="tab" value={mode.tab} />
+              ) : (
+                <input type="hidden" name="routineId" value={mode.routineId} />
+              )}
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Which muscle group is “{typedName}” for?
               </p>
@@ -105,15 +115,7 @@ export function ExercisePicker({ exercises, tab }: { exercises: Exercise[]; tab:
             <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
               {items.map((exercise) => (
                 <li key={exercise.id}>
-                  <Link
-                    href={`${tabPath(tab)}?exercise=${exercise.id}`}
-                    className="flex items-center justify-between px-3 py-3 text-zinc-950 active:bg-zinc-100 dark:text-zinc-50 dark:active:bg-zinc-800"
-                  >
-                    {exercise.name}
-                    {exercise.custom && (
-                      <span className="text-xs text-zinc-500">Custom</span>
-                    )}
-                  </Link>
+                  <PickerItem exercise={exercise} mode={mode} />
                 </li>
               ))}
             </ul>
@@ -125,5 +127,31 @@ export function ExercisePicker({ exercises, tab }: { exercises: Exercise[]; tab:
         <p className="text-center text-zinc-500">No exercises yet.</p>
       )}
     </div>
+  );
+}
+
+const itemClass =
+  "flex w-full items-center justify-between px-3 py-3 text-left text-zinc-950 active:bg-zinc-100 disabled:opacity-50 dark:text-zinc-50 dark:active:bg-zinc-800";
+
+function PickerItem({ exercise, mode }: { exercise: Exercise; mode: PickerMode }) {
+  const custom = exercise.custom && <span className="text-xs text-zinc-500">Custom</span>;
+
+  if ("tab" in mode) {
+    return (
+      <Link href={`${tabPath(mode.tab)}?exercise=${exercise.id}`} className={itemClass}>
+        {exercise.name}
+        {custom}
+      </Link>
+    );
+  }
+
+  const added = mode.alreadyAdded.includes(exercise.id);
+  return (
+    <form action={addToRoutine.bind(null, mode.routineId, exercise.id)}>
+      <button disabled={added} className={itemClass}>
+        {exercise.name}
+        {added ? <span className="text-xs text-zinc-500">Added ✓</span> : custom}
+      </button>
+    </form>
   );
 }

@@ -8,6 +8,7 @@ import {
   numeric,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -147,4 +148,35 @@ export const entries = pgTable(
     check("entries_reps_positive", sql`${t.reps} > 0`),
     check("entries_weight_not_negative", sql`${t.weight} >= 0`),
   ],
+);
+
+// A named list of exercises the user does together, e.g. "Lower 1".
+export const routines = pgTable(
+  "routines",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text().notNull(),
+    // Display order among the user's routines.
+    position: integer().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("routines_user_id_name_unique").on(t.userId, sql`lower(${t.name})`)],
+);
+
+export const routineExercises = pgTable(
+  "routine_exercises",
+  {
+    routineId: integer()
+      .notNull()
+      .references(() => routines.id, { onDelete: "cascade" }),
+    exerciseId: integer()
+      .notNull()
+      .references(() => exercises.id, { onDelete: "cascade" }),
+    // Display order within the routine.
+    position: integer().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.routineId, t.exerciseId] })],
 );
