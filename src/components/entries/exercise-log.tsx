@@ -26,7 +26,7 @@ export async function ExerciseLog({
         <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-950 dark:bg-blue-950 dark:text-blue-100">
           <p className="font-semibold">First time logging {exerciseName}</p>
           <p>
-            Enter the weight and reps you did (sets are optional; blank means 1) and tap{" "}
+            Enter the weight and reps you did (and how many sets) and tap{" "}
             <span className="font-semibold">Save</span>. Next time, the form is filled in with what
             you did last, so you just adjust and save.
           </p>
