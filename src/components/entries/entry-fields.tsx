@@ -32,7 +32,6 @@ function Stepper({
   delta,
   min,
   inputMode,
-  placeholder,
 }: {
   label: string;
   name: string;
@@ -41,7 +40,6 @@ function Stepper({
   delta: number;
   min: number;
   inputMode: "numeric" | "decimal";
-  placeholder?: string;
 }) {
   return (
     <label className="flex flex-col gap-1">
@@ -59,8 +57,12 @@ function Stepper({
           name={name}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={() => {
+            // Nothing below the minimum (no 0 reps or sets).
+            const number = Number(value);
+            if (value.trim() !== "" && !Number.isNaN(number) && number < min) onChange(String(min));
+          }}
           inputMode={inputMode}
-          placeholder={placeholder}
           autoComplete="off"
           className={inputClass}
         />
@@ -81,8 +83,10 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
   const today = useLocalToday();
   const [date, setDate] = useState(defaults?.date);
   const [weight, setWeight] = useState(defaults ? formatWeight(defaults.weight) : "");
-  const [reps, setReps] = useState(defaults ? String(defaults.reps) : "");
-  const [sets, setSets] = useState(defaults?.sets ? String(defaults.sets) : "");
+  // Reps and sets start at 1 (never blank or 0); a single set is stored as
+  // null but shown as 1.
+  const [reps, setReps] = useState(defaults ? String(defaults.reps) : "1");
+  const [sets, setSets] = useState(String(defaults?.sets ?? 1));
 
   return (
     <div className="flex flex-col gap-3">
@@ -113,7 +117,6 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
           delta={1}
           min={1}
           inputMode="numeric"
-          placeholder="1"
         />
       </div>
       <label className="flex flex-col gap-1">

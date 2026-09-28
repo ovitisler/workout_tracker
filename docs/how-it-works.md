@@ -124,7 +124,7 @@ often are one tap away. You get:
 - **The form**, pre-filled with your most recent entry. The first time you log an
   exercise, a short note explains what to enter. Use − / + to adjust
   (weight moves in 5 lb steps, reps and sets by 1) or type any value, like
-  137.5. **Sets** is optional; blank means a single set.
+  137.5. Reps and sets start at 1 and never go below it.
 - **The date**, which defaults to today on your phone. Change it to log
   something you forgot.
 - **History**, newest day first. If a day has more than one entry (say
