@@ -11,6 +11,7 @@ import { MUSCLE_GROUP_LABELS, MUSCLE_GROUPS } from "@/lib/muscle-groups";
 import { addToRoutine } from "@/components/routines/actions";
 
 import { addExercise } from "./actions";
+import { ExerciseFormFields } from "./exercise-form-fields";
 
 function matches(name: string, query: string) {
   const haystack = name.toLowerCase();
@@ -36,6 +37,7 @@ export function ExercisePicker({
 }) {
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
+  const [groupChosen, setGroupChosen] = useState(false);
   const [state, formAction, pending] = useActionState(addExercise, {});
 
   const typedName = normalizeExerciseName(query);
@@ -67,47 +69,47 @@ export function ExercisePicker({
           {!adding ? (
             <button
               type="button"
-              onClick={() => setAdding(true)}
+              onClick={() => {
+                setAdding(true);
+                setGroupChosen(false);
+              }}
               className="w-full text-left font-medium text-zinc-950 dark:text-zinc-50"
             >
               + Add “{typedName}”
             </button>
           ) : (
             <form action={formAction} className="flex flex-col gap-3">
-              <input type="hidden" name="name" value={typedName} />
+              <p className="font-medium text-zinc-950 dark:text-zinc-50">New exercise</p>
               {"tab" in mode ? (
                 <input type="hidden" name="tab" value={mode.tab} />
               ) : (
                 <input type="hidden" name="routineId" value={mode.routineId} />
               )}
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Which muscle group is “{typedName}” for?
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {MUSCLE_GROUPS.map((group) => (
-                  <button
-                    key={group}
-                    name="muscleGroup"
-                    value={group}
-                    disabled={pending}
-                    className="rounded-lg border border-zinc-300 px-3 py-2 text-zinc-950 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-50"
-                  >
-                    {MUSCLE_GROUP_LABELS[group]}
-                  </button>
-                ))}
-              </div>
+              <ExerciseFormFields defaultName={typedName} onGroupChange={() => setGroupChosen(true)} />
               {state.error && (
                 <p role="alert" className="text-sm text-red-600 dark:text-red-400">
                   {state.error}
                 </p>
               )}
-              <button
-                type="button"
-                onClick={() => setAdding(false)}
-                className="text-sm text-zinc-600 underline dark:text-zinc-400"
-              >
-                Cancel
-              </button>
+              <div className="flex gap-2">
+                <button
+                  disabled={pending || !groupChosen}
+                  className="flex-1 rounded-lg bg-blue-600 py-2.5 font-medium text-white disabled:opacity-50 dark:bg-blue-500"
+                >
+                  {pending ? "Adding…" : "routineId" in mode ? "Add to routine" : "Add exercise"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdding(false)}
+                  className="flex-1 rounded-lg border border-zinc-300 py-2.5 font-medium text-zinc-950 dark:border-zinc-700 dark:text-zinc-50"
+                >
+                  Cancel
+                </button>
+              </div>
+              <p className="text-xs text-zinc-500">
+                Custom exercises are only visible to you. You can rename or delete them later in
+                Settings.
+              </p>
             </form>
           )}
         </div>

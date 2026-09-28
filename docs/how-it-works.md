@@ -146,7 +146,7 @@ Weights are in pounds.
   </tr>
   <tr>
     <td>Your recent exercises first, then about 85 more, grouped by muscle.</td>
-    <td>Not there? Type it and add it.</td>
+    <td>Not there? Type it, pick a muscle group, add it.</td>
   </tr>
 </table>
 
@@ -155,8 +155,18 @@ on), grouped by muscle group: Chest, Back, Shoulders, Biceps, Triceps, Quads,
 Hamstrings, Glutes, Calves and Core.
 
 Search matches words in any order, so "incline db" finds *Incline Dumbbell
-Press*. If what you want isn't there, keep typing and tap **+ Add "…"**, then pick
-its muscle group. Custom exercises are private to you and marked "Custom".
+Press*. If what you want isn't there, keep typing and tap **+ Add "…"**. A small
+form opens with the name (fix it if you need to) and the muscle groups: pick one,
+then tap **Add exercise** (or **Add to routine** when you're editing a routine).
+Nothing is created until you tap that button, and **Cancel** backs out.
+
+Custom exercises are private to you and marked "Custom". To **rename one, change
+its muscle group or delete it**, go to **Settings → Custom exercises**, or tap
+**Edit** next to "Custom" on the exercise's screen. Deleting one also deletes its
+logged entries (it tells you how many first) and removes it from your routines.
+Built-in exercises can't be edited or deleted.
+
+<img src="screenshots/edit-exercise.png" width="260" alt="Editing a custom exercise">
 
 ## Stats
 
@@ -197,7 +207,8 @@ weeks (a vacation, say) break the line rather than drawing across them.
 
 ## Settings and accounts
 
-**Settings** shows the email you're signed in with and has **Sign out**.
+**Settings** shows the email you're signed in with, **Custom exercises** (to
+rename or delete the ones you added), and **Sign out**.
 
 Admins (set with `ADMIN_EMAILS`) also see **Access requests**, with a count of
 people waiting. Each request shows the email, their note and when they asked, with

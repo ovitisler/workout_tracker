@@ -3,7 +3,7 @@ import "server-only";
 import { and, asc, eq, isNull, or, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
-import { exercises } from "@/db/schema";
+import { entries, exercises, routineExercises } from "@/db/schema";
 
 // Built-in exercises plus the user's own.
 function visibleTo(userId: string) {
@@ -52,4 +52,30 @@ export async function findExerciseByName(userId: string, name: string) {
       and(visibleTo(userId), eq(sql`lower(${exercises.name})`, name.toLowerCase())),
     );
   return row;
+}
+
+// The user's own exercises, with how many entries and routines use each.
+export function listCustomExercises(userId: string) {
+  return getDb()
+    .select({
+      id: exercises.id,
+      name: exercises.name,
+      muscleGroup: exercises.muscleGroup,
+      entryCount: sql<number>`count(distinct ${entries.id})::int`,
+      routineCount: sql<number>`count(distinct ${routineExercises.routineId})::int`,
+    })
+    .from(exercises)
+    .leftJoin(entries, eq(entries.exerciseId, exercises.id))
+    .leftJoin(routineExercises, eq(routineExercises.exerciseId, exercises.id))
+    .where(eq(exercises.userId, userId))
+    .groupBy(exercises.id)
+    .orderBy(asc(exercises.name));
+}
+
+export type CustomExercise = Awaited<ReturnType<typeof listCustomExercises>>[number];
+
+// One of the user's own exercises (never a built-in), with usage counts.
+export async function getCustomExercise(userId: string, id: number) {
+  const rows = await listCustomExercises(userId);
+  return rows.find((row) => row.id === id);
 }

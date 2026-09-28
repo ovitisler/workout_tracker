@@ -129,7 +129,14 @@ await page.goto(`${BASE_URL}/log`);
 
 await page.fill("input[type=search]", "cable pullover");
 await page.click("text=+ Add");
+await page.locator("label", { hasText: /^Back$/ }).click();
 await shot(page, "add-exercise");
+
+await page.click("button:text-is('Add exercise')");
+await page.waitForURL(/\/log\/\d+$/);
+await page.click("main p a:text-is('Edit')");
+await page.waitForURL(/\/settings\/exercises\/\d+$/);
+await shot(page, "edit-exercise");
 
 await page.goto(`${BASE_URL}/stats`);
 await shot(page, "stats-list");

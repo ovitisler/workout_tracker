@@ -6,6 +6,7 @@ import Link from "next/link";
 import { signOut } from "@/app/sign-in/actions";
 import { Screen } from "@/components/screen";
 import { countPendingRequests, isAdmin } from "@/lib/access";
+import { listCustomExercises } from "@/lib/exercises";
 import { requireUser } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Settings · Workout Tracker" };
@@ -13,7 +14,10 @@ export const metadata: Metadata = { title: "Settings · Workout Tracker" };
 export default async function SettingsPage() {
   const user = await requireUser();
   const admin = isAdmin(user.email);
-  const pending = admin ? await countPendingRequests() : 0;
+  const [pending, customExercises] = await Promise.all([
+    admin ? countPendingRequests() : 0,
+    listCustomExercises(user.id),
+  ]);
 
   return (
     <Screen title="Settings">
@@ -30,6 +34,22 @@ export default async function SettingsPage() {
                 Sign out
               </button>
             </form>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-1">
+          <h2 className="px-1 text-xs font-semibold tracking-wide text-zinc-500 uppercase">Exercises</h2>
+          <div className="overflow-hidden rounded-lg bg-white dark:bg-zinc-900">
+            <Link
+              href="/settings/exercises"
+              className="flex items-center justify-between gap-3 px-4 py-3 active:bg-zinc-100 dark:active:bg-zinc-800"
+            >
+              <span className="text-zinc-950 dark:text-zinc-50">Custom exercises</span>
+              <span className="flex items-center gap-1 text-zinc-500">
+                {customExercises.length}
+                <ChevronRight className="size-5" aria-hidden />
+              </span>
+            </Link>
           </div>
         </section>
 
