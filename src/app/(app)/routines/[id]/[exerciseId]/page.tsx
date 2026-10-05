@@ -6,10 +6,11 @@ import { ExerciseMeta } from "@/components/exercises/exercise-meta";
 import { Screen, ScreenAction } from "@/components/screen";
 import { requireUser } from "@/lib/auth";
 import { getExerciseFromParam } from "@/lib/exercises";
-import { getRoutine } from "@/lib/routines";
+import { getRoutine, listRoutineExercises } from "@/lib/routines";
 
 // Logging an exercise from within a routine: same as the Log tab's screen, but
-// "back" returns to the routine.
+// "back" and "Done" return to the routine, and after saving there's a button
+// for the next exercise not yet done today.
 export default async function RoutineExercisePage({
   params,
 }: PageProps<"/routines/[id]/[exerciseId]">) {
@@ -20,6 +21,7 @@ export default async function RoutineExercisePage({
     getExerciseFromParam(user.id, exerciseId),
   ]);
   if (!routine || !exercise) notFound();
+  const items = await listRoutineExercises(user.id, routine.id);
 
   return (
     <Screen
@@ -33,7 +35,20 @@ export default async function RoutineExercisePage({
     >
       <div className="flex flex-col gap-4">
         <ExerciseMeta exercise={exercise} />
-        <ExerciseLog userId={user.id} exerciseId={exercise.id} exerciseName={exercise.name} />
+        <ExerciseLog
+          userId={user.id}
+          exerciseId={exercise.id}
+          exerciseName={exercise.name}
+          doneHref={`/routines/${routine.id}`}
+          routine={{
+            id: routine.id,
+            items: items.map((item) => ({
+              id: item.id,
+              name: item.name,
+              lastDate: item.latest?.date ?? null,
+            })),
+          }}
+        />
       </div>
     </Screen>
   );

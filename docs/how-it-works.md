@@ -107,12 +107,18 @@ them.
 <table>
   <tr>
     <td><img src="screenshots/log-exercise.png" width="260" alt="Logging Overhead Press"></td>
+    <td><img src="screenshots/log-saved.png" width="260" alt="Saved, with a button for the next exercise in the routine"></td>
     <td><img src="screenshots/log-first-time.png" width="260" alt="Logging an exercise for the first time"></td>
-    <td><img src="screenshots/edit-entry.png" width="260" alt="Editing a past entry"></td>
   </tr>
   <tr>
     <td>The form is pre-filled from last time; history is below.</td>
+    <td>After saving: on to the next exercise, done, or log another.</td>
     <td>The first time, a note explains what to do.</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/edit-entry.png" width="260" alt="Editing a past entry"></td>
+  </tr>
+  <tr>
     <td>Tap any past entry to fix or delete it.</td>
   </tr>
 </table>
@@ -130,8 +136,17 @@ often are one tap away. You get:
 - **History**, newest day first. If a day has more than one entry (say
   *2 × 8* then a weaker *1 × 6*), they're listed in the order you logged them.
 
-Tap **Save** and the entry appears at the top of the history, and the form
-resets to today, ready for next time. Tap any history line to edit or delete it.
+Tap **Save** and the form gives way to a confirmation ("Logged 3 × 8 @ 135 lb"),
+and the entry appears at the top of the history. From there:
+
+- **Next: <exercise>** (when you came from a routine) opens the next exercise in
+  the routine you haven't logged today, so you can work through a whole routine
+  without going back to the list.
+- **Done** goes back to the routine, or to the Log tab.
+- **Log another** brings the form back, pre-filled with what you just saved, for
+  another set at a different weight or reps.
+
+Tap any history line to edit or delete it.
 
 The chart icon at the top right jumps to that exercise's stats.
 

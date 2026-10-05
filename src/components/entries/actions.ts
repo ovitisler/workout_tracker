@@ -6,10 +6,11 @@ import { refresh } from "next/cache";
 import { getDb } from "@/db";
 import { entries } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
-import { parseEntryInput } from "@/lib/entry-format";
+import { parseEntryInput, type EntryValues } from "@/lib/entry-format";
 import { getExercise } from "@/lib/exercises";
 
 export type EntryFormState = { ok?: boolean; error?: string };
+export type CreateEntryState = EntryFormState & { saved?: EntryValues };
 
 function parseForm(formData: FormData) {
   const field = (name: string) => formData.get(name) as string | null;
@@ -23,9 +24,9 @@ function parseForm(formData: FormData) {
 
 export async function createEntry(
   exerciseId: number,
-  _prev: EntryFormState,
+  _prev: CreateEntryState,
   formData: FormData,
-): Promise<EntryFormState> {
+): Promise<CreateEntryState> {
   const user = await requireUser();
   if (!(await getExercise(user.id, exerciseId))) {
     return { error: "That exercise doesn't exist." };
@@ -37,7 +38,7 @@ export async function createEntry(
     .insert(entries)
     .values({ userId: user.id, exerciseId, ...parsed.values });
   refresh();
-  return { ok: true };
+  return { ok: true, saved: parsed.values };
 }
 
 export async function updateEntry(

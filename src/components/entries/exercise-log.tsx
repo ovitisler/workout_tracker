@@ -1,5 +1,5 @@
 import { EntryRow } from "@/components/entries/entry-row";
-import { LogForm } from "@/components/entries/log-form";
+import { LogForm, type RoutineContext } from "@/components/entries/log-form";
 import { listEntries } from "@/lib/entries";
 import { formatDay, groupByDate, localToday } from "@/lib/entry-format";
 
@@ -8,10 +8,15 @@ export async function ExerciseLog({
   userId,
   exerciseId,
   exerciseName,
+  doneHref,
+  routine,
 }: {
   userId: string;
   exerciseId: number;
   exerciseName: string;
+  // Where "Done" goes after saving: the screen's back link.
+  doneHref: string;
+  routine?: RoutineContext;
 }) {
   const history = await listEntries(userId, exerciseId);
   // Pre-fill from the first entry of the most recent day: usually the main
@@ -41,6 +46,8 @@ export async function ExerciseLog({
             ? { sets: latest.sets, reps: latest.reps, weight: latest.weight }
             : null
         }
+        doneHref={doneHref}
+        routine={routine}
       />
 
       <section className="flex flex-col gap-3">

@@ -71,9 +71,9 @@ async function logFromRoutine(page: Page, routine: string, exercise: string, bum
   await page.locator("main li a", { hasText: exercise }).click();
   await page.waitForURL(/\/routines\/\d+\/\d+$/);
   for (let i = 0; i < bump; i++) await page.click("[aria-label='Increase Weight (lb)']");
-  const before = await page.locator("section li").count();
   await page.click("main form button:has-text('Save')");
-  await page.waitForFunction((n) => document.querySelectorAll("section li").length > n, before);
+  // The form gives way to the "Logged …" card.
+  await page.locator("main [role=status]").waitFor();
 }
 
 console.log(`Screenshots of ${BASE_URL} as ${EMAIL}:`);
@@ -98,6 +98,7 @@ await shot(page, "new-routine");
 
 await logFromRoutine(page, "Push", "Bench Press", 1);
 await logFromRoutine(page, "Push", "Incline Dumbbell Press");
+await shot(page, "log-saved");
 
 await page.goto(`${BASE_URL}/routines`);
 await shot(page, "routines");

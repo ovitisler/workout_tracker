@@ -24,7 +24,12 @@ export default async function LogExercisePage({ params }: PageProps<"/log/[exerc
     >
       <div className="flex flex-col gap-4">
         <ExerciseMeta exercise={exercise} />
-        <ExerciseLog userId={user.id} exerciseId={exercise.id} exerciseName={exercise.name} />
+        <ExerciseLog
+          userId={user.id}
+          exerciseId={exercise.id}
+          exerciseName={exercise.name}
+          doneHref="/log"
+        />
       </div>
     </Screen>
   );
