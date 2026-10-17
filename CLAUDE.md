@@ -85,10 +85,12 @@ User-facing docs live in `docs/how-it-works.md`, with screenshots from
   (`viewportFit: "cover"` in the root layout).
 - Route folders hold only pages; components and server actions are in
   `src/components/<area>/`.
-- Every page folder under `(app)/` has a one-line `loading.tsx` re-exporting
-  `(app)/loading.tsx` (`<ScreenSkeleton>`), so the skeleton shows instantly
-  while the page loads its data. Next only shows the loading file of the
-  segment being navigated to, so a new page needs its own copy.
+- Loading skeletons are switched off while the user compares: the
+  `loading.tsx` files (one per page folder under `(app)/`, each re-exporting
+  `(app)/loading.tsx`, which renders `<ScreenSkeleton>`) were removed in the
+  commit "Turn off loading skeletons for now"; `git revert` it to bring them
+  back. Next only shows the loading file of the segment being navigated to,
+  so each page needs its own copy.
 - Routines (`routines` + `routine_exercises`, ordered by `position`) are named
   lists of exercises. Starter templates live in `src/lib/routine-templates.ts`
   (built-in exercise names only; a test checks them against the seed migration)

@@ -6,8 +6,9 @@ import { TABS } from "@/lib/tabs";
 
 const block = "rounded bg-zinc-200 motion-safe:animate-pulse dark:bg-zinc-800";
 
-// What a screen looks like while its data loads (see the loading.tsx files):
-// the same top bar as <Screen>, then grey placeholders shaped like a list.
+// What a screen looks like while its data loads: the same top bar as
+// <Screen>, then grey placeholders shaped like a list. Unused for now: the
+// loading.tsx files that render it are switched off (see CLAUDE.md).
 // A tab's first screen shows its real title, since we know it; deeper screens
 // show a placeholder.
 export function ScreenSkeleton() {
