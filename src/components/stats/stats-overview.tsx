@@ -4,17 +4,16 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { EntryText } from "@/components/entries/entry-text";
 import type { Overview } from "@/lib/entries";
-import { formatDay } from "@/lib/entry-format";
 import { MUSCLE_GROUP_LABELS, type MuscleGroup } from "@/lib/muscle-groups";
 import {
   addDays,
-  BEST_WINDOW_DAYS,
   daysLiftedByWeek,
-  recentBests,
+  progress,
   setsByMuscle,
+  type ExerciseProgress,
 } from "@/lib/overview";
+import { formatTrend } from "@/lib/stats";
 import { useLocalToday } from "@/lib/use-local-today";
 
 const headingClass = "text-xs font-semibold tracking-wide text-zinc-500 uppercase";
@@ -48,8 +47,8 @@ export function StatsOverview({ overview }: { overview: Overview }) {
   return (
     <>
       <MuscleSets rows={setsByMuscle(overview.entries, muscleOf, today)} />
-      <RecentBests bests={recentBests(overview.entries, overview.exercises, today)} today={today} />
       <DaysLifted weeks={daysLiftedByWeek(overview.entries, today)} />
+      <Progress rows={progress(overview.entries, overview.exercises, today)} />
     </>
   );
 }
@@ -98,31 +97,34 @@ function MuscleSets({ rows }: { rows: { group: MuscleGroup; recent: number; aver
   );
 }
 
-function RecentBests({ bests, today }: { bests: ReturnType<typeof recentBests>; today: string }) {
+// Every exercise's 3-month strength trend, so stalls show as well as gains.
+function Progress({ rows }: { rows: ExerciseProgress[] }) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className={headingClass}>New bests · last {BEST_WINDOW_DAYS} days</h2>
-      {bests.length === 0 ? (
+      <h2 className={headingClass}>Progress · last 3 months</h2>
+      {rows.length === 0 ? (
         <p className={`${cardClass} text-sm text-zinc-500`}>
-          None in the last {BEST_WINDOW_DAYS} days.
+          Log an exercise on a few days over a couple of weeks to see its trend.
         </p>
       ) : (
         <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
-          {bests.map((best) => (
-            <li key={best.exerciseId}>
+          {rows.map((row) => (
+            <li key={row.exerciseId}>
               <Link
-                href={`/stats/${best.exerciseId}`}
+                href={`/stats/${row.exerciseId}`}
                 className="flex items-center gap-3 px-3 py-3 active:bg-zinc-100 dark:active:bg-zinc-800"
               >
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-zinc-950 dark:text-zinc-50">{best.name}</span>
-                  <span className="block text-sm">
-                    <EntryText entry={best} />
-                    <span className="text-zinc-500">
-                      {" · "}
-                      {best.date === today ? "Today" : formatDay(best.date, today)}
-                    </span>
-                  </span>
+                <span className="min-w-0 flex-1 truncate text-zinc-950 dark:text-zinc-50">
+                  {row.name}
+                </span>
+                <span
+                  className={`shrink-0 tabular-nums ${
+                    row.trend.direction === "flat"
+                      ? "text-zinc-500"
+                      : "font-semibold text-zinc-950 dark:text-zinc-50"
+                  }`}
+                >
+                  {formatTrend(row.trend)}
                 </span>
                 <ChevronRight className="size-5 shrink-0 text-zinc-400" aria-hidden />
               </Link>
@@ -131,7 +133,7 @@ function RecentBests({ bests, today }: { bests: ReturnType<typeof recentBests>; 
         </ul>
       )}
       <p className="text-xs text-zinc-500">
-        Your highest estimated strength on an exercise so far, from weight or reps.
+        Change in estimated strength, from weight and reps together.
       </p>
     </section>
   );

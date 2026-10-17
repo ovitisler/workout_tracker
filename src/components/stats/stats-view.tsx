@@ -8,6 +8,7 @@ import {
   daysInRange,
   rangeStart,
   RANGES,
+  formatTrend,
   strengthTrend,
   summarizeDays,
   toDayNumber,
@@ -28,15 +29,7 @@ const RANGE_NAMES: Record<Range, string> = {
 
 function trendText(trend: Trend | null) {
   if (!trend) return { value: "—", note: "Not enough data yet" };
-  const percent = `${Math.round(Math.abs(trend.change) * 100)}%`;
-  switch (trend.direction) {
-    case "up":
-      return { value: `↑ ${percent}`, note: "Est. strength" };
-    case "down":
-      return { value: `↓ ${percent}`, note: "Est. strength" };
-    case "flat":
-      return { value: "→ Flat", note: "Est. strength" };
-  }
+  return { value: formatTrend(trend), note: "Est. strength" };
 }
 
 function Tile({ label, value, note }: { label: string; value: string; note: string }) {

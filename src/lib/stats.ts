@@ -93,6 +93,14 @@ export function strengthTrend(days: Day[]): Trend | null {
   return { direction, change };
 }
 
+// "↑ 6%", "↓ 3%" or "→ Flat".
+export function formatTrend(trend: Trend) {
+  const percent = `${Math.round(Math.abs(trend.change) * 100)}%`;
+  if (trend.direction === "up") return `↑ ${percent}`;
+  if (trend.direction === "down") return `↓ ${percent}`;
+  return "→ Flat";
+}
+
 // Heaviest top set (ties: more reps, then most recent).
 export function bestDay(days: Day[]): Day | undefined {
   let best: Day | undefined;

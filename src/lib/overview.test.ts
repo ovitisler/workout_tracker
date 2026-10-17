@@ -4,12 +4,11 @@ import type { MuscleGroup } from "./muscle-groups";
 import {
   addDays,
   daysLiftedByWeek,
-  recentBests,
+  progress,
   setsByMuscle,
   type OverviewEntry,
   type OverviewExercise,
 } from "./overview";
-import { estimateOneRepMax } from "./stats";
 
 const TODAY = "2026-10-17";
 
@@ -17,8 +16,8 @@ function entry(date: string, exerciseId: number, weight: number, reps = 5, sets:
   return { date, exerciseId, weight, reps, sets } satisfies OverviewEntry;
 }
 
-function exercise(id: number, earlierBest: number | null = null): OverviewExercise {
-  return { id, name: `Exercise ${id}`, muscleGroup: "chest", earlierBest };
+function exercise(id: number): OverviewExercise {
+  return { id, name: `Exercise ${id}`, muscleGroup: "chest" };
 }
 
 describe("addDays", () => {
@@ -79,38 +78,49 @@ describe("daysLiftedByWeek", () => {
   });
 });
 
-describe("recentBests", () => {
-  it("lists exercises that beat their earlier best in the last 30 days, newest first", () => {
-    const bests = recentBests(
+describe("progress", () => {
+  it("gives each exercise's 3-month trend, biggest gain first", () => {
+    const rows = progress(
       [
-        // 1: earlier best in the data (Sep 1), beaten twice; the higher one counts.
-        entry("2026-09-01", 1, 200),
-        entry("2026-10-01", 1, 205),
-        entry("2026-10-08", 1, 210),
-        // 2: only matched, not beaten.
-        entry("2026-09-01", 2, 100),
-        entry("2026-10-10", 2, 100),
-        // 3: beats an earlierBest from before the data, by reps at the same weight.
-        entry("2026-10-12", 3, 100, 8),
-        // 4: first time logged; nothing to beat.
-        entry("2026-10-15", 4, 50),
+        // 1: up 10% over the 3 months.
+        entry("2026-08-01", 1, 200),
+        entry("2026-09-10", 1, 210),
+        entry("2026-10-15", 1, 220),
+        // 2: flat.
+        entry("2026-08-01", 2, 100),
+        entry("2026-09-10", 2, 100),
+        entry("2026-10-15", 2, 100),
+        // 3: down.
+        entry("2026-08-01", 3, 100),
+        entry("2026-09-10", 3, 95),
+        entry("2026-10-15", 3, 90),
+        // 4: only two days, not enough for a trend.
+        entry("2026-09-10", 4, 50),
+        entry("2026-10-15", 4, 60),
       ],
-      [exercise(1), exercise(2), exercise(3, estimateOneRepMax(100, 5)), exercise(4)],
+      [exercise(1), exercise(2), exercise(3), exercise(4)],
       TODAY,
     );
-    expect(bests.map((b) => [b.exerciseId, b.date, b.weight, b.reps])).toEqual([
-      [3, "2026-10-12", 100, 8],
-      [1, "2026-10-08", 210, 5],
+    expect(rows.map((r) => [r.exerciseId, r.trend.direction])).toEqual([
+      [1, "up"],
+      [2, "flat"],
+      [3, "down"],
     ]);
+    expect(rows[0].trend.change).toBeCloseTo(0.1);
   });
 
-  it("uses the 30-day window ending today", () => {
-    const bests = recentBests(
-      [entry("2026-09-17", 1, 100), entry("2026-09-18", 1, 110)],
+  it("only looks at the last 3 months", () => {
+    // A big drop before Jul 17 doesn't count; after it, it's flat.
+    const rows = progress(
+      [
+        entry("2026-06-01", 1, 300),
+        entry("2026-08-01", 1, 200),
+        entry("2026-09-10", 1, 200),
+        entry("2026-10-15", 1, 200),
+      ],
       [exercise(1)],
       TODAY,
     );
-    // Sep 18 is the first day of the window; Sep 17 is before it.
-    expect(bests.map((b) => b.date)).toEqual(["2026-09-18"]);
+    expect(rows.map((r) => r.trend.direction)).toEqual(["flat"]);
   });
 });

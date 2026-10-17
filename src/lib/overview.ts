@@ -1,10 +1,10 @@
 // The Stats tab's overview (above the exercise list): sets per muscle group,
-// recent bests and days lifted. Pure, so it's tested; "today" is the device's
+// progress per exercise and days lifted. Pure, so it's tested; "today" is the device's
 // date, passed in by the client component.
 
 import type { MuscleGroup } from "./muscle-groups";
 import { MUSCLE_GROUPS } from "./muscle-groups";
-import { estimateOneRepMax } from "./stats";
+import { daysInRange, strengthTrend, summarizeDays, type Trend } from "./stats";
 
 export type OverviewEntry = {
   date: string;
@@ -14,20 +14,11 @@ export type OverviewEntry = {
   weight: number;
 };
 
-export type OverviewExercise = {
-  id: number;
-  name: string;
-  muscleGroup: MuscleGroup;
-  // Best estimated 1RM from entries older than the ones sent (see
-  // getOverview), or null if there are none.
-  earlierBest: number | null;
-};
+export type OverviewExercise = { id: number; name: string; muscleGroup: MuscleGroup };
 
-// How far back the entries go. Enough for 12 weeks of days lifted plus a
-// day either way for timezones; anything older only counts via earlierBest.
-export const OVERVIEW_DAYS = 90;
-
-export const BEST_WINDOW_DAYS = 30;
+// How far back the entries go: enough for 3 months of progress and 12 weeks
+// of days lifted, plus a day either way for timezones.
+export const OVERVIEW_DAYS = 100;
 const AVERAGE_WEEKS = 4;
 
 // "2026-10-17" plus n days (n may be negative).
@@ -76,38 +67,28 @@ export function daysLiftedByWeek(entries: OverviewEntry[], today: string, weeks 
   });
 }
 
-// Exercises whose best estimated 1RM in the last 30 days beats everything
-// before, newest first, each with the entry that did it. An exercise logged
-// for the first time in the window isn't a "best": there's nothing to beat.
-export function recentBests(
+export type ExerciseProgress = { exerciseId: number; name: string; trend: Trend };
+
+// Each exercise's strength trend over the last 3 months (the same as its
+// Stats page on 3M), biggest gain first. Exercises without enough data for a
+// trend (3 days over 2 weeks) are left out.
+export function progress(
   entries: OverviewEntry[],
   exercises: OverviewExercise[],
   today: string,
-) {
-  const windowStart = addDays(today, -(BEST_WINDOW_DAYS - 1));
-  const before = new Map<number, number>();
-  const inWindow = new Map<number, { entry: OverviewEntry; strength: number }>();
+): ExerciseProgress[] {
+  const byExercise = new Map<number, OverviewEntry[]>();
   for (const entry of entries) {
     if (entry.date > today) continue;
-    const strength = estimateOneRepMax(entry.weight, entry.reps);
-    if (entry.date < windowStart) {
-      before.set(entry.exerciseId, Math.max(before.get(entry.exerciseId) ?? 0, strength));
-      continue;
-    }
-    const top = inWindow.get(entry.exerciseId);
-    // Ties go to the later day: that's when it was matched most recently.
-    if (!top || strength > top.strength || (strength === top.strength && entry.date > top.entry.date)) {
-      inWindow.set(entry.exerciseId, { entry, strength });
-    }
+    const list = byExercise.get(entry.exerciseId);
+    if (list) list.push(entry);
+    else byExercise.set(entry.exerciseId, [entry]);
   }
-
   return exercises
     .flatMap((exercise) => {
-      const top = inWindow.get(exercise.id);
-      const earlier = Math.max(before.get(exercise.id) ?? -1, exercise.earlierBest ?? -1);
-      if (!top || earlier < 0 || top.strength <= earlier + 1e-9) return [];
-      const { date, sets, reps, weight } = top.entry;
-      return [{ exerciseId: exercise.id, name: exercise.name, date, sets, reps, weight }];
+      const days = daysInRange(summarizeDays(byExercise.get(exercise.id) ?? []), "3M", today);
+      const trend = strengthTrend(days);
+      return trend ? [{ exerciseId: exercise.id, name: exercise.name, trend }] : [];
     })
-    .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name));
+    .sort((a, b) => b.trend.change - a.trend.change || a.name.localeCompare(b.name));
 }
