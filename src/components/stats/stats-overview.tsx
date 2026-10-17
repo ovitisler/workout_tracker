@@ -54,10 +54,11 @@ export function StatsOverview({ overview }: { overview: Overview }) {
   );
 }
 
-// One bar per muscle group for the last 7 days, with a tick at the weekly
-// average of the 4 weeks before, so "less than usual" shows without targets.
+// One bar per muscle group for the last 7 days, then "usually N": the weekly
+// average over the 4 weeks before, rounded, so "less than usual" shows
+// without targets.
 function MuscleSets({ rows }: { rows: { group: MuscleGroup; recent: number; average: number }[] }) {
-  const scale = Math.max(1, ...rows.map((r) => Math.max(r.recent, r.average)));
+  const scale = Math.max(1, ...rows.map((r) => r.recent));
 
   return (
     <section className="flex flex-col gap-2">
@@ -66,43 +67,31 @@ function MuscleSets({ rows }: { rows: { group: MuscleGroup; recent: number; aver
         {rows.length === 0 ? (
           <p className="text-sm text-zinc-500">Nothing logged in the last 5 weeks.</p>
         ) : (
-          <>
-            <ul className="flex flex-col gap-2">
-              {rows.map((row) => (
-                <li key={row.group} className="grid grid-cols-[5.5rem_1fr_4.5rem] items-center gap-2">
-                  <span className="truncate text-sm text-zinc-950 dark:text-zinc-50">
-                    {MUSCLE_GROUP_LABELS[row.group]}
-                  </span>
-                  <span className="relative h-5" aria-hidden>
-                    {row.recent > 0 && (
-                      <span
-                        className="absolute inset-y-0.5 left-0 rounded-r bg-blue-600 dark:bg-blue-500"
-                        style={{ width: `${(row.recent / scale) * 100}%` }}
-                      />
-                    )}
-                    {row.average > 0 && (
-                      <span
-                        className="absolute inset-y-0 w-0.5 -translate-x-1/2 rounded-full bg-zinc-950 ring-2 ring-white dark:bg-zinc-50 dark:ring-zinc-900"
-                        style={{ left: `${(row.average / scale) * 100}%` }}
-                      />
-                    )}
-                  </span>
-                  <span className="text-right text-sm tabular-nums">
-                    <span className="font-semibold text-zinc-950 dark:text-zinc-50">{row.recent}</span>
-                    <span className="text-zinc-500"> / {formatCount(row.average)}</span>
-                    <span className="sr-only">
-                      {" "}
-                      sets in the last 7 days; {formatCount(row.average)} a week on average before that
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-3 flex items-center gap-1.5 text-xs text-zinc-500">
-              <span className="inline-block h-3 w-0.5 rounded-full bg-zinc-950 dark:bg-zinc-50" aria-hidden />
-              Your weekly average over the 4 weeks before (the number after the slash).
-            </p>
-          </>
+          <ul className="flex flex-col gap-2">
+            {rows.map((row) => (
+              <li
+                key={row.group}
+                className="grid grid-cols-[5.5rem_1fr_1.5rem_5rem] items-center gap-2 text-sm"
+              >
+                <span className="truncate text-zinc-950 dark:text-zinc-50">
+                  {MUSCLE_GROUP_LABELS[row.group]}
+                </span>
+                <span className="h-4" aria-hidden>
+                  {row.recent > 0 && (
+                    <span
+                      className="block h-full rounded-r bg-blue-600 dark:bg-blue-500"
+                      style={{ width: `${(row.recent / scale) * 100}%` }}
+                    />
+                  )}
+                </span>
+                <span className="text-right font-semibold text-zinc-950 tabular-nums dark:text-zinc-50">
+                  {row.recent}
+                  <span className="sr-only"> sets,</span>
+                </span>
+                <span className="text-zinc-500 tabular-nums">usually {Math.round(row.average)}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </section>
