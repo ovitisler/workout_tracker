@@ -1,9 +1,11 @@
 import "server-only";
 
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, gte, max, sql } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { entries, exercises } from "@/db/schema";
+import { localToday } from "@/lib/entry-format";
+import { addDays, OVERVIEW_DAYS } from "@/lib/overview";
 
 export type Entry = Awaited<ReturnType<typeof listEntries>>[number];
 
@@ -46,3 +48,42 @@ export async function listRecentExercises(userId: string, limit?: number) {
 }
 
 export type RecentExercise = Awaited<ReturnType<typeof listRecentExercises>>[number];
+
+// Data for the Stats overview: the last OVERVIEW_DAYS of entries (by the
+// server's date; the client picks its own "today" within them), and every
+// exercise the user has logged with its best estimated 1RM from before that.
+// The estimate matches estimateOneRepMax() in stats.ts.
+export async function getOverview(userId: string) {
+  const since = addDays(localToday(), -OVERVIEW_DAYS);
+  const db = getDb();
+  const [recent, logged] = await Promise.all([
+    db
+      .select({
+        date: entries.date,
+        exerciseId: entries.exerciseId,
+        sets: entries.sets,
+        reps: entries.reps,
+        weight: entries.weight,
+      })
+      .from(entries)
+      .where(and(eq(entries.userId, userId), gte(entries.date, since))),
+    db
+      .select({
+        id: exercises.id,
+        name: exercises.name,
+        muscleGroup: exercises.muscleGroup,
+        earlierBest: max(
+          sql`case when ${entries.date} < ${since} then
+            case when ${entries.reps} <= 1 then ${entries.weight}
+            else ${entries.weight} * (1 + ${entries.reps} / 30.0) end end`,
+        ).mapWith(Number),
+      })
+      .from(entries)
+      .innerJoin(exercises, eq(exercises.id, entries.exerciseId))
+      .where(eq(entries.userId, userId))
+      .groupBy(exercises.id),
+  ]);
+  return { entries: recent, exercises: logged };
+}
+
+export type Overview = Awaited<ReturnType<typeof getOverview>>;

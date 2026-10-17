@@ -190,22 +190,34 @@ Built-in exercises can't be edited or deleted.
 
 <table>
   <tr>
-    <td><img src="screenshots/stats-list.png" width="260" alt="Stats tab listing the exercises you've logged"></td>
+    <td><img src="screenshots/stats-list.png" width="260" alt="Stats tab: sets per muscle, new bests and days lifted, above your exercises"></td>
     <td><img src="screenshots/stats.png" width="260" alt="Bench press stats over two years"></td>
     <td><img src="screenshots/stats-day.png" width="260" alt="Tapping a day on the chart"></td>
     <td><img src="screenshots/stats-dark.png" width="260" alt="Barbell curl trending down, in dark mode"></td>
   </tr>
   <tr>
-    <td>Only exercises you've logged.</td>
+    <td>An overview of the last few weeks, then your exercises.</td>
     <td>Two years of bench press.</td>
     <td>Tap or drag on a chart to read a day.</td>
     <td>A downward trend (and dark mode).</td>
   </tr>
 </table>
 
-The **Stats** tab lists only the exercises you've logged (most recent first, with
-what you did last), since those are the ones with something to show. Pick one,
-or tap the chart icon while logging an exercise.
+The top of the **Stats** tab shows what you've done lately across all exercises:
+
+- **Sets per muscle**: sets for each muscle group in the last 7 days, with a
+  mark at your weekly average over the 4 weeks before, so a muscle you've been
+  skipping stands out. Each exercise counts toward its one muscle group (bench
+  press is chest), and every logged set counts.
+- **New bests**: exercises where you beat your best estimated strength (see
+  below) in the last 30 days, from more weight or more reps. Tap one for its
+  stats.
+- **Days lifted**: how many days you trained in each of the last 12 weeks. Tap a
+  week to see its dates.
+
+Below that it lists the exercises you've logged (most recent first, with what
+you did last), since those are the ones with something to show. Pick one, or
+tap the chart icon while logging an exercise.
 Choose a range (3 months, 6 months, 1 year or all) and you get:
 
 - **Trend**: whether you're getting stronger (↑), holding steady (→ Flat) or
