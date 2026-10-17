@@ -81,6 +81,18 @@ export function formatDay(date: string, today: string) {
   });
 }
 
+// How long ago a day was, for "when did I last do this": "Today",
+// "Yesterday", "5 days ago", then the date once it's two weeks or more.
+export function formatDaysAgo(date: string, today: string) {
+  const days = Math.round(
+    (Date.parse(`${today}T00:00:00Z`) - Date.parse(`${date}T00:00:00Z`)) / 86_400_000,
+  );
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 14) return `${days} days ago`;
+  return formatDay(date, today);
+}
+
 // Today's date in the device's timezone, as "YYYY-MM-DD".
 export function localToday(now = new Date()) {
   const month = String(now.getMonth() + 1).padStart(2, "0");

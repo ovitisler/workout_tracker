@@ -63,7 +63,7 @@ them.
   </tr>
   <tr>
     <td>Starting out: make one, or pick a template.</td>
-    <td>Your routines, with their exercises and when you last did each.</td>
+    <td>Your routines, each tagged with when you last did it.</td>
     <td>Tap one at the gym. Each exercise shows what you did last time.</td>
   </tr>
 </table>
@@ -75,9 +75,12 @@ them.
   empty Routines screen and under **+**.
 - **Or create one yourself** with **+** (or **Create your first routine**), then
   add exercises: search, and tap each one.
-- **The list** shows each routine's exercises and when you **last did it**, so you
-  can see which one is due. A routine counts as done on a day when you logged at
-  least half of its exercises. If you've started it today, you'll see "2/5 today".
+- **The list** shows each routine's exercises, with a tag beside its name for
+  when you **last did it** ("Yesterday", "5 days ago", or the date after two
+  weeks), so you can see which one is due. A routine counts as done on a day when
+  you logged at least half of its exercises. Once you start it today the tag
+  turns blue and counts up ("2/5 today"), then shows **✓ Done today** when every
+  exercise is logged.
 - **At the gym**, open the routine and tap an exercise to log it. Once you've
   logged something for it today, it gets a ✓, and the routine shows "2 of 5 done
   today". There's nothing to tick by hand, and it resets automatically the next

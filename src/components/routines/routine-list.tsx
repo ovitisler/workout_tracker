@@ -1,9 +1,9 @@
 "use client";
 
-import { CircleCheck, ChevronRight, ListChecks, X } from "lucide-react";
+import { Check, CircleCheck, ChevronRight, ListChecks, X } from "lucide-react";
 import Link from "next/link";
 
-import { formatDay } from "@/lib/entry-format";
+import { formatDaysAgo } from "@/lib/entry-format";
 import { useLocalToday } from "@/lib/use-local-today";
 
 import { TemplatePicker } from "./template-picker";
@@ -16,6 +16,47 @@ type Routine = {
   lastDone: string | null;
 };
 
+const pillClass = "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium";
+
+// When the routine was last done, so it's easy to see which one is due:
+// filled blue once every exercise is logged today, light blue part-way
+// through, grey with how long ago otherwise. Nothing until it's been done
+// once, or before the device's date is known.
+function LastDonePill({
+  lastDone,
+  done,
+  total,
+  today,
+}: {
+  lastDone: string | null;
+  done: number;
+  total: number;
+  today: string;
+}) {
+  if (!today) return null;
+  if (total > 0 && done === total) {
+    return (
+      <span className={`${pillClass} bg-blue-600 text-white dark:bg-blue-500`}>
+        <Check className="size-3.5" aria-hidden />
+        Done today
+      </span>
+    );
+  }
+  if (done > 0) {
+    return (
+      <span className={`${pillClass} bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300`}>
+        {done}/{total} today
+      </span>
+    );
+  }
+  if (!lastDone) return null;
+  return (
+    <span className={`${pillClass} bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300`}>
+      <span className="sr-only">Last done </span>
+      {formatDaysAgo(lastDone, today)}
+    </span>
+  );
+}
 
 // "Push, Pull and Legs"
 function listNames(names: string[]) {
@@ -57,12 +98,7 @@ export function RoutineList({
         const done = today ? routine.lastLogged.filter((date) => date === today).length : 0;
         const status = [
           total > 0 && `${total} exercise${total === 1 ? "" : "s"}`,
-          routine.lastDone
-            ? routine.lastDone === today
-              ? "done today"
-              : `last done ${today ? formatDay(routine.lastDone, today) : ""}`
-            : total > 0 && "not done yet",
-          done > 0 && `${done}/${total} today`,
+          !routine.lastDone && done === 0 && total > 0 && "not done yet",
         ]
           .filter(Boolean)
           .join(" · ");
@@ -74,8 +110,16 @@ export function RoutineList({
               className="flex items-center gap-3 px-4 py-3 active:bg-zinc-100 dark:active:bg-zinc-800"
             >
               <span className="min-w-0 flex-1">
-                <span className="block text-lg font-medium text-zinc-950 dark:text-zinc-50">
-                  {routine.name}
+                <span className="flex items-center justify-between gap-2">
+                  <span className="truncate text-lg font-medium text-zinc-950 dark:text-zinc-50">
+                    {routine.name}
+                  </span>
+                  <LastDonePill
+                    lastDone={routine.lastDone}
+                    done={done}
+                    total={total}
+                    today={today}
+                  />
                 </span>
                 <span className="block truncate text-sm text-zinc-600 dark:text-zinc-400">
                   {routine.exerciseNames.join(", ") || "No exercises yet"}

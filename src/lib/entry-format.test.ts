@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   formatDay,
+  formatDaysAgo,
   formatEntry,
   formatWeight,
   groupByDate,
@@ -70,6 +71,15 @@ describe("formatting", () => {
   it("formats days, adding the year only when it differs", () => {
     expect(formatDay("2026-09-19", "2026-09-26")).toBe("Sat, Sep 19");
     expect(formatDay("2025-12-31", "2026-09-26")).toBe("Wed, Dec 31, 2025");
+  });
+
+  it("says how many days ago, then the date after two weeks", () => {
+    expect(formatDaysAgo("2026-09-26", "2026-09-26")).toBe("Today");
+    expect(formatDaysAgo("2026-09-25", "2026-09-26")).toBe("Yesterday");
+    expect(formatDaysAgo("2026-09-13", "2026-09-26")).toBe("13 days ago");
+    expect(formatDaysAgo("2026-09-12", "2026-09-26")).toBe("Sat, Sep 12");
+    // Across a month and a DST change.
+    expect(formatDaysAgo("2026-10-30", "2026-11-02")).toBe("3 days ago");
   });
 
   it("gives today's local date", () => {
