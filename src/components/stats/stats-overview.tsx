@@ -150,16 +150,16 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
   const average = earlier.reduce((sum, w) => sum + w.sets, 0) / earlier.length;
   const scale = Math.max(1, ...weeks.map((w) => w.sets));
   const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
-  const summary = (week: LiftingWeek) => `${plural(week.sets, "set")} · ${plural(week.days, "day")}`;
+  const summary = (week: LiftingWeek) => `${plural(week.sets, "set")} · ${plural(week.days, "workout")}`;
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className={headingClass}>Sets and days lifted · last 12 weeks</h2>
+      <h2 className={headingClass}>Sets and workouts · last 12 weeks</h2>
       <div className={cardClass}>
         <p className="text-sm text-zinc-950 dark:text-zinc-50" aria-live="polite">
           {active === null ? (
             <>
-              <span className="font-semibold">{summary(weeks[last])}</span> in the last 7
+              <span className="font-semibold">{summary(weeks[last])}</span> in the last week
               <span className="text-zinc-500"> · {formatCount(average)} sets a week before that</span>
             </>
           ) : (
@@ -205,7 +205,7 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
           <span>{formatStretch(weeks[0].end)}</span>
           <span>Last 7 days</span>
         </div>
-        <p className="mt-2 text-xs text-zinc-500">Bar height is sets; each segment is a day.</p>
+        <p className="mt-2 text-xs text-zinc-500">Bar height is sets; each segment is a workout.</p>
       </div>
     </section>
   );

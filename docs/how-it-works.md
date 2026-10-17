@@ -190,7 +190,7 @@ Built-in exercises can't be edited or deleted.
 
 <table>
   <tr>
-    <td><img src="screenshots/stats-list.png" width="260" alt="Stats tab: sets per muscle, sets and days lifted, progress, above your exercises"></td>
+    <td><img src="screenshots/stats-list.png" width="260" alt="Stats tab: sets per muscle, sets and workouts, progress, above your exercises"></td>
     <td><img src="screenshots/stats.png" width="260" alt="Bench press stats over two years"></td>
     <td><img src="screenshots/stats-day.png" width="260" alt="Tapping a day on the chart"></td>
     <td><img src="screenshots/stats-dark.png" width="260" alt="Barbell curl trending down, in dark mode"></td>
@@ -209,9 +209,9 @@ The top of the **Stats** tab shows what you've done lately across all exercises:
   "usually", your weekly average over the 4 weeks before, so a muscle you've
   been skipping stands out. Each exercise counts toward its one muscle group (bench
   press is chest), and every logged set counts.
-- **Sets and days lifted**: how many sets you did in each of the last 12 weeks.
-  Each bar is split into one segment per day you trained, so you see days too.
-  Tap a week to see its dates.
+- **Sets and workouts**: how many sets you did in each of the last 12 weeks.
+  Each bar is split into one segment per day you trained (a workout), so you
+  see how many workouts too. Tap a week to see its dates.
 - **Progress**: each exercise you've trained in the last 3 months with its
   trend over that time (↑ 6%, → Flat, ↓ 3%; see **Trend** below), biggest
   gain first, so stalls show as well as gains. Tap one for its stats.
