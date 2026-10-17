@@ -55,15 +55,32 @@ export function setsByMuscle(
   })).filter((row) => row.recent > 0 || row.average > 0);
 }
 
-// Days with anything logged in each of the last `weeks` 7-day stretches,
-// oldest first; the last one ends today. `end` is each stretch's last day.
-export function daysLiftedByWeek(entries: OverviewEntry[], today: string, weeks = 12) {
-  const dates = new Set(entries.map((entry) => entry.date));
+export type LiftingWeek = {
+  // The stretch's last day.
+  end: string;
+  // Days with anything logged.
+  days: number;
+  // All sets logged, across every exercise.
+  sets: number;
+  // Sets on each day lifted, oldest day first (length === days).
+  daySets: number[];
+};
+
+// Days lifted and sets done in each of the last `weeks` 7-day stretches,
+// oldest first; the last one ends today.
+export function daysLiftedByWeek(entries: OverviewEntry[], today: string, weeks = 12): LiftingWeek[] {
+  const setsByDate = new Map<string, number>();
+  for (const entry of entries) {
+    setsByDate.set(entry.date, (setsByDate.get(entry.date) ?? 0) + setCount(entry));
+  }
   return Array.from({ length: weeks }, (_, i) => {
     const end = addDays(today, -7 * (weeks - 1 - i));
-    let days = 0;
-    for (let d = 0; d < 7; d++) if (dates.has(addDays(end, -d))) days++;
-    return { end, days };
+    const daySets: number[] = [];
+    for (let d = 6; d >= 0; d--) {
+      const sets = setsByDate.get(addDays(end, -d));
+      if (sets !== undefined) daySets.push(sets);
+    }
+    return { end, days: daySets.length, sets: daySets.reduce((a, b) => a + b, 0), daySets };
   });
 }
 

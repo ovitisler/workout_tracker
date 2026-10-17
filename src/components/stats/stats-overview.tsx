@@ -12,6 +12,7 @@ import {
   progress,
   setsByMuscle,
   type ExerciseProgress,
+  type LiftingWeek,
 } from "@/lib/overview";
 import { formatTrend } from "@/lib/stats";
 import { useLocalToday } from "@/lib/use-local-today";
@@ -139,28 +140,31 @@ function Progress({ rows }: { rows: ExerciseProgress[] }) {
   );
 }
 
-// Columns for days lifted in each of the last 12 weeks (7-day stretches
-// ending today). Tap one to see its dates.
-function DaysLifted({ weeks }: { weeks: { end: string; days: number }[] }) {
+// Columns for the sets done in each of the last 12 weeks (7-day stretches
+// ending today), each split into one segment per day lifted, so the height
+// is sets and the segment count is days. Tap one to see its dates.
+function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
   const [active, setActive] = useState<number | null>(null);
   const last = weeks.length - 1;
   const earlier = weeks.slice(0, last);
-  const average = earlier.reduce((sum, w) => sum + w.days, 0) / earlier.length;
-  const plural = (n: number) => `${n} day${n === 1 ? "" : "s"}`;
+  const average = earlier.reduce((sum, w) => sum + w.sets, 0) / earlier.length;
+  const scale = Math.max(1, ...weeks.map((w) => w.sets));
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  const summary = (week: LiftingWeek) => `${plural(week.sets, "set")} · ${plural(week.days, "day")}`;
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className={headingClass}>Days lifted · last 12 weeks</h2>
+      <h2 className={headingClass}>Sets and days lifted · last 12 weeks</h2>
       <div className={cardClass}>
         <p className="text-sm text-zinc-950 dark:text-zinc-50" aria-live="polite">
           {active === null ? (
             <>
-              <span className="font-semibold">{plural(weeks[last].days)}</span> in the last 7
-              <span className="text-zinc-500"> · {formatCount(average)} a week before that</span>
+              <span className="font-semibold">{summary(weeks[last])}</span> in the last 7
+              <span className="text-zinc-500"> · {formatCount(average)} sets a week before that</span>
             </>
           ) : (
             <>
-              <span className="font-semibold">{plural(weeks[active].days)}</span>
+              <span className="font-semibold">{summary(weeks[active])}</span>
               <span className="text-zinc-500">
                 {" "}
                 · {active === last ? "Last 7 days" : formatStretch(weeks[active].end)}
@@ -173,19 +177,27 @@ function DaysLifted({ weeks }: { weeks: { end: string; days: number }[] }) {
             <button
               key={week.end}
               type="button"
-              aria-label={`${i === last ? "Last 7 days" : formatStretch(week.end)}: ${plural(week.days)}`}
+              aria-label={`${i === last ? "Last 7 days" : formatStretch(week.end)}: ${summary(week)}`}
               aria-pressed={active === i}
               onClick={() => setActive(active === i ? null : i)}
               className="flex h-full flex-1 items-end justify-center px-px"
             >
               <span
-                className={`w-full max-w-6 rounded-t ${
-                  i === (active ?? last)
-                    ? "bg-blue-600 dark:bg-blue-500"
-                    : "bg-blue-200 dark:bg-blue-900"
-                }`}
-                style={{ height: `${(week.days / 7) * 100}%` }}
-              />
+                className="flex w-full max-w-6 flex-col-reverse gap-px"
+                style={{ height: `${(week.sets / scale) * 100}%` }}
+              >
+                {week.daySets.map((sets, day) => (
+                  <span
+                    key={day}
+                    className={`last:rounded-t ${
+                      i === (active ?? last)
+                        ? "bg-blue-600 dark:bg-blue-500"
+                        : "bg-blue-200 dark:bg-blue-900"
+                    }`}
+                    style={{ flex: sets }}
+                  />
+                ))}
+              </span>
             </button>
           ))}
         </div>
@@ -193,6 +205,7 @@ function DaysLifted({ weeks }: { weeks: { end: string; days: number }[] }) {
           <span>{formatStretch(weeks[0].end)}</span>
           <span>Last 7 days</span>
         </div>
+        <p className="mt-2 text-xs text-zinc-500">Bar height is sets; each segment is a day.</p>
       </div>
     </section>
   );
