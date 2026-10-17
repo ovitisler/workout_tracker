@@ -218,7 +218,7 @@ The top of the **Stats** tab shows what you've done lately across all exercises:
 Below that it lists the exercises you've logged (most recent first, with what
 you did last), since those are the ones with something to show. Pick one, or
 tap the chart icon while logging an exercise.
-Choose a range (3 months, 6 months, 1 year or all) and you get:
+Choose a range (3 months, the default, or 6 months, 1 year or all) and you get:
 
 - **Trend**: whether you're getting stronger (↑), holding steady (→ Flat) or
   weaker (↓) over that range, as a percentage. Changes under 2.5% count as

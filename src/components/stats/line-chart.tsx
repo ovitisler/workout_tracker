@@ -10,6 +10,9 @@ const HEIGHT = 160;
 const MARGIN = { top: 12, right: 40, bottom: 22, left: 36 };
 // Longer gaps than this (e.g. a vacation) break the line.
 const GAP_DAYS = 28;
+// Up to this many points, each gets a dot so you can see where the sessions
+// are; past it the line alone reads better.
+const MAX_DOTS = 20;
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -24,6 +27,23 @@ function useWidth() {
     return () => observer.disconnect();
   }, []);
   return [ref, width] as const;
+}
+
+// "Oct 3" for a day number.
+function dayLabel(x: number) {
+  const d = new Date(x * 86_400_000);
+  return `${MONTH_NAMES[d.getUTCMonth()]} ${d.getUTCDate()}`;
+}
+
+// Month ticks between two day numbers, thinned to about 5 labels. Spans with
+// fewer than two month starts get the first and last day instead.
+function xTicks(from: number, to: number) {
+  const months = monthTicks(from, to);
+  if (months.length >= 2 || to - from < 2) return months;
+  return [
+    { x: from, label: dayLabel(from) },
+    { x: to, label: dayLabel(to) },
+  ];
 }
 
 // Month ticks between two day numbers, thinned to about 5 labels.
@@ -132,7 +152,7 @@ export function LineChart({
             </g>
           ))}
 
-          {monthTicks(xMin, xMax).map((tick) => (
+          {xTicks(xMin, xMax).map((tick) => (
             <text
               key={tick.x}
               x={sx(tick.x)}
@@ -152,6 +172,18 @@ export function LineChart({
             strokeLinecap="round"
             className="stroke-[#2a78d6] dark:stroke-[#3987e5]"
           />
+
+          {points.length <= MAX_DOTS &&
+            points.slice(0, -1).map((p) => (
+              <circle
+                key={p.x}
+                cx={sx(p.x)}
+                cy={sy(p.y)}
+                r={4}
+                strokeWidth={2}
+                className="fill-[#2a78d6] stroke-white dark:fill-[#3987e5] dark:stroke-zinc-900"
+              />
+            ))}
 
           {last && (
             <>

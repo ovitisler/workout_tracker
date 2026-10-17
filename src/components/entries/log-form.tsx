@@ -100,8 +100,11 @@ export function LogForm({
 
   return (
     <form action={formAction} className="flex flex-col gap-3 rounded-lg bg-white p-4 dark:bg-zinc-900">
-      {/* The form unmounts while the card shows, so it comes back fresh. */}
-      <EntryFields key={latestId} defaults={again ?? defaults} />
+      {/* The form unmounts while the card shows, so it comes back fresh.
+          Otherwise it resets when the latest entry changes (say, after editing
+          history) — but not after "Log another": the refresh from the save
+          can land after that, and would wipe what's being typed. */}
+      <EntryFields key={again ? "again" : latestId} defaults={again ?? defaults} />
       {state.error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {state.error}

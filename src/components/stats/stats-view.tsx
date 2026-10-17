@@ -43,12 +43,18 @@ function Tile({ label, value, note }: { label: string; value: string; note: stri
 }
 
 export function StatsView({ entries, today }: { entries: Entry[]; today: string }) {
-  const [range, setRange] = useState<Range>("6M");
+  // 3M, like the Progress list on the Stats tab, so the trends match.
+  const [range, setRange] = useState<Range>("3M");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const allDays = summarizeDays(entries);
   const days = daysInRange(allDays, range, today);
-  const start = rangeStart(range, today) ?? allDays[0]?.date ?? today;
+  // The charts start at the range's start, or the first day logged in it if
+  // that's later, so a short history fills the width instead of bunching up
+  // at the right.
+  const rangeFrom = rangeStart(range, today);
+  const firstDay = days[0]?.date ?? today;
+  const start = rangeFrom && rangeFrom > firstDay ? rangeFrom : firstDay;
   const xDomain: [number, number] = [toDayNumber(start), toDayNumber(today)];
 
   const selectRange = (next: Range) => {
