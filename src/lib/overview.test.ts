@@ -59,22 +59,27 @@ describe("setsByMuscle", () => {
 });
 
 describe("daysLiftedByWeek", () => {
-  it("counts distinct days per 7-day stretch, oldest first, ending today", () => {
+  it("counts days and sets per 7-day stretch, oldest first, ending today", () => {
     const weeks = daysLiftedByWeek(
       [
-        entry(TODAY, 1, 135),
-        entry(TODAY, 2, 100), // same day, counted once
-        entry("2026-10-11", 1, 135), // still the last stretch
-        entry("2026-10-10", 1, 135), // the one before
+        entry(TODAY, 1, 135), // 3 sets
+        entry(TODAY, 2, 100, 8, 2), // same day: 5 sets in all, one day
+        entry("2026-10-11", 1, 135, 5, null), // 1 set, still the last stretch
+        entry("2026-10-10", 1, 135, 5, 4), // the one before
       ],
       TODAY,
       3,
     );
     expect(weeks).toEqual([
-      { end: "2026-10-03", days: 0 },
-      { end: "2026-10-10", days: 1 },
-      { end: "2026-10-17", days: 2 },
+      { end: "2026-10-03", days: 0, sets: 0, daySets: [] },
+      { end: "2026-10-10", days: 1, sets: 4, daySets: [4] },
+      { end: "2026-10-17", days: 2, sets: 6, daySets: [1, 5] },
     ]);
+  });
+
+  it("ignores entries dated after today", () => {
+    const [week] = daysLiftedByWeek([entry("2026-10-18", 1, 135)], TODAY, 1);
+    expect(week).toEqual({ end: TODAY, days: 0, sets: 0, daySets: [] });
   });
 });
 
