@@ -63,10 +63,17 @@ export function formatWeight(weight: number) {
   return String(Math.round(weight * 100) / 100);
 }
 
-// "3 × 8 @ 135 lb", or "8 @ 135 lb" for a single set.
+// "3 × 8", or "8 reps" for a single set.
+export function formatSetsReps(entry: Pick<EntryValues, "sets" | "reps">) {
+  if (entry.sets && entry.sets > 1) return `${entry.sets} × ${entry.reps}`;
+  return `${entry.reps} rep${entry.reps === 1 ? "" : "s"}`;
+}
+
+// "135 lb · 3 × 8", or "225 lb · 8 reps" for a single set. Weight first: it's
+// the number that changes week to week. Lists that can style the parts use
+// <EntryText> instead.
 export function formatEntry(entry: Pick<EntryValues, "sets" | "reps" | "weight">) {
-  const reps = entry.sets && entry.sets > 1 ? `${entry.sets} × ${entry.reps}` : `${entry.reps}`;
-  return `${reps} @ ${formatWeight(entry.weight)} lb`;
+  return `${formatWeight(entry.weight)} lb · ${formatSetsReps(entry)}`;
 }
 
 // "Sat, Sep 19", plus the year when it isn't the current one.

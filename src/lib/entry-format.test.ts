@@ -64,8 +64,9 @@ describe("formatting", () => {
   });
 
   it("formats entries, hiding a single set", () => {
-    expect(formatEntry({ sets: 3, reps: 8, weight: 135 })).toBe("3 × 8 @ 135 lb");
-    expect(formatEntry({ sets: null, reps: 5, weight: 225 })).toBe("5 @ 225 lb");
+    expect(formatEntry({ sets: 3, reps: 8, weight: 135 })).toBe("135 lb · 3 × 8");
+    expect(formatEntry({ sets: null, reps: 5, weight: 225 })).toBe("225 lb · 5 reps");
+    expect(formatEntry({ sets: 1, reps: 1, weight: 315 })).toBe("315 lb · 1 rep");
   });
 
   it("formats days, adding the year only when it differs", () => {

@@ -4,11 +4,12 @@ import { CircleCheck } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 
-import { formatDay, formatEntry, type EntryValues } from "@/lib/entry-format";
+import { formatDay, type EntryValues } from "@/lib/entry-format";
 import { useLocalToday } from "@/lib/use-local-today";
 
 import { createEntry, type CreateEntryState } from "./actions";
 import { EntryFields, type EntryDefaults } from "./entry-fields";
+import { EntryText } from "./entry-text";
 
 // The routine this exercise was opened from, for the "Next" button: its
 // exercises in order, with each one's most recent log date.
@@ -65,8 +66,8 @@ export function LogForm({
         <div className="flex items-center gap-3">
           <CircleCheck className="size-7 shrink-0 text-blue-600 dark:text-blue-500" aria-hidden />
           <div>
-            <p className="font-semibold text-zinc-950 dark:text-zinc-50">
-              Logged {formatEntry(saved)}
+            <p className="text-zinc-950 dark:text-zinc-50">
+              Logged <EntryText entry={saved} />
             </p>
             {today && saved.date !== today && (
               <p className="text-sm text-zinc-500">on {formatDay(saved.date, today)}</p>

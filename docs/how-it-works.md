@@ -17,8 +17,8 @@ There are no timers, programs or coaching. You log; it remembers and charts.
 
 ## The idea in 30 seconds
 
-Every time you do an exercise, you save one line: **sets × reps @ weight**, on
-a day. For example, *3 × 8 @ 135 lb* on Monday. Next time you open that
+Every time you do an exercise, you save one line: **weight, sets × reps**, on
+a day. For example, *135 lb · 3 × 8* (3 sets of 8 reps) on Monday. Next time you open that
 exercise, the form is already filled in with what you did last time; change what's
 different (say, 140 lb) and save.
 
@@ -139,7 +139,7 @@ often are one tap away. You get:
 - **History**, newest day first. If a day has more than one entry (say
   *2 × 8* then a weaker *1 × 6*), they're listed in the order you logged them.
 
-Tap **Save** and the form gives way to a confirmation ("Logged 3 × 8 @ 135 lb"),
+Tap **Save** and the form gives way to a confirmation ("Logged 135 lb 3 × 8"),
 and the entry appears at the top of the history. From there:
 
 - **Next: <exercise>** (when you came from a routine) opens the next exercise in
@@ -220,7 +220,7 @@ Choose a range (3 months, 6 months, 1 year or all) and you get:
 - **Top weight** chart: the heaviest weight you lifted each day.
 
 Tap or drag on either chart and the box above them shows that day's details,
-like *2 × 8 @ 205 lb · ≈ 260 est. · Mon, Apr 20*. Gaps of more than four
+like *205 lb · 2 × 8 · ≈ 260 est. · Mon, Apr 20*. Gaps of more than four
 weeks (a vacation, say) break the line rather than drawing across them.
 
 ## Settings and accounts

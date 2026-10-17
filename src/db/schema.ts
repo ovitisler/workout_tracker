@@ -119,8 +119,8 @@ export const exercises = pgTable(
   ],
 );
 
-// One line in an exercise's history: "3 × 8 @ 135 lb" on a given day. A day
-// can have several entries (e.g. 2 × 8 and 1 × 6 at the same weight).
+// One line in an exercise's history: 3 sets × 8 reps at 135 lb on a given
+// day. A day can have several entries (e.g. 2 × 8 and 1 × 6 at the same weight).
 export const entries = pgTable(
   "entries",
   {

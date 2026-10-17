@@ -6,6 +6,7 @@ import { formatEntry } from "@/lib/entry-format";
 
 import { deleteEntry, updateEntry, type EntryFormState } from "./actions";
 import { EntryFields } from "./entry-fields";
+import { EntryText } from "./entry-text";
 
 type Entry = { id: number; date: string; sets: number | null; reps: number; weight: number };
 
@@ -26,9 +27,9 @@ export function EntryRow({ entry }: { entry: Entry }) {
       <button
         type="button"
         onClick={() => setEditing(true)}
-        className="w-full px-3 py-3 text-left text-zinc-950 active:bg-zinc-100 dark:text-zinc-50 dark:active:bg-zinc-800"
+        className="w-full px-3 py-3 text-left active:bg-zinc-100 dark:active:bg-zinc-800"
       >
-        {formatEntry(entry)}
+        <EntryText entry={entry} />
       </button>
     );
   }
