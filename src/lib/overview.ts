@@ -28,17 +28,23 @@ export function addDays(date: string, n: number) {
   return d.toISOString().slice(0, 10);
 }
 
+// The Sunday on or before the date: weeks run Sunday to Saturday.
+export function startOfWeek(date: string) {
+  const day = new Date(`${date}T00:00:00Z`).getUTCDay(); // 0 = Sunday
+  return addDays(date, -day);
+}
+
 const setCount = (entry: OverviewEntry) => entry.sets ?? 1;
 
-// Sets per muscle group in the last 7 days (today included), next to the
-// weekly average over the 4 weeks before that. Muscle groups with neither are
-// left out; the rest keep MUSCLE_GROUPS order so rows don't jump around.
+// Sets per muscle group so far this week (Sunday through today), next to the
+// weekly average over the 4 full weeks before that. Muscle groups with neither
+// are left out; the rest keep MUSCLE_GROUPS order so rows don't jump around.
 export function setsByMuscle(
   entries: OverviewEntry[],
   muscleOf: Map<number, MuscleGroup>,
   today: string,
 ) {
-  const weekStart = addDays(today, -6);
+  const weekStart = startOfWeek(today);
   const averageStart = addDays(weekStart, -7 * AVERAGE_WEEKS);
   const recent = new Map<MuscleGroup, number>();
   const earlier = new Map<MuscleGroup, number>();
@@ -56,7 +62,7 @@ export function setsByMuscle(
 }
 
 export type LiftingWeek = {
-  // The stretch's last day.
+  // The week's Saturday (still ahead for the current week).
   end: string;
   // Days with anything logged.
   days: number;
@@ -66,18 +72,22 @@ export type LiftingWeek = {
   daySets: number[];
 };
 
-// Days lifted and sets done in each of the last `weeks` 7-day stretches,
-// oldest first; the last one ends today.
+// Days lifted and sets done in each of the last `weeks` calendar weeks
+// (Sunday to Saturday), oldest first; the last one is this week so far.
 export function daysLiftedByWeek(entries: OverviewEntry[], today: string, weeks = 12): LiftingWeek[] {
   const setsByDate = new Map<string, number>();
   for (const entry of entries) {
     setsByDate.set(entry.date, (setsByDate.get(entry.date) ?? 0) + setCount(entry));
   }
+  const thisWeek = startOfWeek(today);
   return Array.from({ length: weeks }, (_, i) => {
-    const end = addDays(today, -7 * (weeks - 1 - i));
+    const start = addDays(thisWeek, -7 * (weeks - 1 - i));
+    const end = addDays(start, 6);
     const daySets: number[] = [];
-    for (let d = 6; d >= 0; d--) {
-      const sets = setsByDate.get(addDays(end, -d));
+    for (let d = 0; d < 7; d++) {
+      const date = addDays(start, d);
+      if (date > today) break;
+      const sets = setsByDate.get(date);
       if (sets !== undefined) daySets.push(sets);
     }
     return { end, days: daySets.length, sets: daySets.reduce((a, b) => a + b, 0), daySets };

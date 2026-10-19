@@ -205,11 +205,13 @@ Built-in exercises can't be edited or deleted.
 
 The top of the **Stats** tab shows what you've done lately across all exercises:
 
-- **Sets per muscle**: sets for each muscle group in the last 7 days, next to
-  "usually", your weekly average over the 4 weeks before, so a muscle you've
+- **Sets per muscle**: sets for each muscle group so far this week (weeks run
+  Sunday to Saturday), next to "usually", your weekly average over the 4 full
+  weeks before, so a muscle you've
   been skipping stands out. Each exercise counts toward its one muscle group (bench
   press is chest), and every logged set counts.
-- **Sets and workouts**: how many sets you did in each of the last 12 weeks.
+- **Sets and workouts**: how many sets you did in each of the last 12 weeks
+  (Sunday to Saturday; the last bar is this week so far).
   Each bar is split into one segment per day you trained (a workout), so you
   see how many workouts too. Tap a week to see its dates.
 - **Progress**: each exercise you've trained in the last 3 months with its
