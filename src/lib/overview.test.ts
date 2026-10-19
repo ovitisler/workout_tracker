@@ -6,6 +6,7 @@ import {
   daysLiftedByWeek,
   progress,
   setsByMuscle,
+  startOfWeek,
   type OverviewEntry,
   type OverviewExercise,
 } from "./overview";
@@ -34,11 +35,11 @@ describe("setsByMuscle", () => {
     [3, "quads"],
   ]);
 
-  it("counts the last 7 days against the weekly average of the 4 weeks before", () => {
+  it("counts this week against the weekly average of the 4 weeks before", () => {
     const rows = setsByMuscle(
       [
         entry(TODAY, 1, 135), // 3 sets, this week
-        entry("2026-10-11", 1, 135, 5, null), // 1 set, 7th day back: this week
+        entry("2026-10-11", 1, 135, 5, null), // 1 set, that Sunday: this week
         entry("2026-10-10", 1, 135, 5, 4), // previous week
         entry("2026-09-13", 1, 135, 5, 4), // first day of the 4-week average
         entry("2026-09-12", 1, 135, 5, 100), // too old
@@ -56,10 +57,33 @@ describe("setsByMuscle", () => {
   it("ignores entries dated after today", () => {
     expect(setsByMuscle([entry("2026-10-18", 1, 135)], muscleOf, TODAY)).toEqual([]);
   });
+
+  it("uses the calendar week (Sunday to Saturday), not the last 7 days", () => {
+    // Monday: this week is just Sun Oct 18 and Mon Oct 19.
+    const rows = setsByMuscle(
+      [
+        entry("2026-10-19", 1, 135), // Monday: 3 sets, this week
+        entry("2026-10-18", 1, 135, 5, 2), // Sunday: 2 sets, this week
+        entry("2026-10-17", 1, 135, 5, 4), // Saturday: last week, so the average
+      ],
+      muscleOf,
+      "2026-10-19",
+    );
+    expect(rows).toEqual([{ group: "chest", recent: 5, average: 1 }]);
+  });
+});
+
+describe("startOfWeek", () => {
+  it("is the Sunday on or before the date", () => {
+    expect(startOfWeek("2026-10-18")).toBe("2026-10-18"); // Sunday
+    expect(startOfWeek("2026-10-19")).toBe("2026-10-18"); // Monday
+    expect(startOfWeek("2026-10-24")).toBe("2026-10-18"); // Saturday
+    expect(startOfWeek("2026-11-01")).toBe("2026-11-01"); // Sunday, across a month
+  });
 });
 
 describe("daysLiftedByWeek", () => {
-  it("counts days and sets per 7-day stretch, oldest first, ending today", () => {
+  it("counts days and sets per week, oldest first, ending with this week", () => {
     const weeks = daysLiftedByWeek(
       [
         entry(TODAY, 1, 135), // 3 sets
@@ -80,6 +104,24 @@ describe("daysLiftedByWeek", () => {
   it("ignores entries dated after today", () => {
     const [week] = daysLiftedByWeek([entry("2026-10-18", 1, 135)], TODAY, 1);
     expect(week).toEqual({ end: TODAY, days: 0, sets: 0, daySets: [] });
+  });
+
+  it("uses Sunday-to-Saturday weeks, the last being this week so far", () => {
+    // Monday Oct 19: this week is Sun Oct 18 to Sat Oct 24, so far two days.
+    const weeks = daysLiftedByWeek(
+      [
+        entry("2026-10-19", 1, 135), // Monday: 3 sets
+        entry("2026-10-18", 1, 135, 5, 2), // Sunday: 2 sets
+        entry("2026-10-17", 1, 135, 5, 4), // Saturday: last week
+        entry("2026-10-24", 1, 135, 5, 9), // later this week: not yet
+      ],
+      "2026-10-19",
+      2,
+    );
+    expect(weeks).toEqual([
+      { end: "2026-10-17", days: 1, sets: 4, daySets: [4] },
+      { end: "2026-10-24", days: 2, sets: 5, daySets: [2, 3] },
+    ]);
   });
 });
 

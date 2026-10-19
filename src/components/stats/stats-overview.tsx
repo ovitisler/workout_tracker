@@ -26,7 +26,8 @@ function formatCount(value: number) {
   return String(rounded);
 }
 
-// "Oct 11–17", or "Sep 28–Oct 4" across a month.
+// A week's dates by its last day (Saturday): "Oct 11–17", or "Sep 28–Oct 4"
+// across a month.
 function formatStretch(end: string) {
   const start = addDays(end, -6);
   const month = (date: string) =>
@@ -54,15 +55,15 @@ export function StatsOverview({ overview }: { overview: Overview }) {
   );
 }
 
-// One bar per muscle group for the last 7 days, then "usually N": the weekly
-// average over the 4 weeks before, rounded, so "less than usual" shows
-// without targets.
+// One bar per muscle group for this week so far (Sunday on), then "usually N":
+// the weekly average over the 4 full weeks before, rounded, so "less than
+// usual" shows without targets.
 function MuscleSets({ rows }: { rows: { group: MuscleGroup; recent: number; average: number }[] }) {
   const scale = Math.max(1, ...rows.map((r) => r.recent));
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className={headingClass}>Sets per muscle · last 7 days</h2>
+      <h2 className={headingClass}>Sets per muscle · this week</h2>
       <div className={cardClass}>
         {rows.length === 0 ? (
           <p className="text-sm text-zinc-500">Nothing logged in the last 5 weeks.</p>
@@ -140,9 +141,10 @@ function Progress({ rows }: { rows: ExerciseProgress[] }) {
   );
 }
 
-// Columns for the sets done in each of the last 12 weeks (7-day stretches
-// ending today), each split into one segment per day lifted, so the height
-// is sets and the segment count is days. Tap one to see its dates.
+// Columns for the sets done in each of the last 12 weeks (Sunday to Saturday,
+// the last being this week so far), each split into one segment per day
+// lifted, so the height is sets and the segment count is days. Tap one to see
+// its dates.
 function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
   const [active, setActive] = useState<number | null>(null);
   const last = weeks.length - 1;
@@ -159,7 +161,7 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
         <p className="text-sm text-zinc-950 dark:text-zinc-50" aria-live="polite">
           {active === null ? (
             <>
-              <span className="font-semibold">{summary(weeks[last])}</span> in the last week
+              <span className="font-semibold">{summary(weeks[last])}</span> so far this week
               <span className="text-zinc-500"> · {formatCount(average)} sets a week before that</span>
             </>
           ) : (
@@ -167,7 +169,7 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
               <span className="font-semibold">{summary(weeks[active])}</span>
               <span className="text-zinc-500">
                 {" "}
-                · {active === last ? "Last 7 days" : formatStretch(weeks[active].end)}
+                · {active === last ? "This week" : formatStretch(weeks[active].end)}
               </span>
             </>
           )}
@@ -177,7 +179,7 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
             <button
               key={week.end}
               type="button"
-              aria-label={`${i === last ? "Last 7 days" : formatStretch(week.end)}: ${summary(week)}`}
+              aria-label={`${i === last ? "This week" : formatStretch(week.end)}: ${summary(week)}`}
               aria-pressed={active === i}
               onClick={() => setActive(active === i ? null : i)}
               className="flex h-full flex-1 items-end justify-center px-px"
@@ -203,7 +205,7 @@ function DaysLifted({ weeks }: { weeks: LiftingWeek[] }) {
         </div>
         <div className="mt-1 flex justify-between text-xs text-zinc-500">
           <span>{formatStretch(weeks[0].end)}</span>
-          <span>Last 7 days</span>
+          <span>This week</span>
         </div>
         <p className="mt-2 text-xs text-zinc-500">Bar height is sets; each segment is a workout.</p>
       </div>
