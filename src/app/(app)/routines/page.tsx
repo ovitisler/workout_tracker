@@ -2,8 +2,10 @@ import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 
 import { RoutineList } from "@/components/routines/routine-list";
+import { TodaysWorkouts } from "@/components/routines/todays-workouts";
 import { Screen, ScreenAction } from "@/components/screen";
 import { requireUser } from "@/lib/auth";
+import { listRecentEntries } from "@/lib/entries";
 import { findTemplate } from "@/lib/routine-templates";
 import { listRoutines } from "@/lib/routines";
 
@@ -14,6 +16,10 @@ export default async function RoutinesPage({ searchParams }: PageProps<"/routine
   // Just added from a template (see createRoutinesFromTemplate).
   const { added } = await searchParams;
   const addedTemplate = typeof added === "string" ? findTemplate(added) : undefined;
+  const [routines, recentEntries] = await Promise.all([
+    listRoutines(user.id),
+    listRecentEntries(user.id),
+  ]);
   return (
     <Screen
       title="Routines"
@@ -23,10 +29,10 @@ export default async function RoutinesPage({ searchParams }: PageProps<"/routine
         </ScreenAction>
       }
     >
-      <RoutineList
-        routines={await listRoutines(user.id)}
-        justAdded={addedTemplate?.routines.map((r) => r.name)}
-      />
+      <div className="flex flex-col gap-6">
+        <RoutineList routines={routines} justAdded={addedTemplate?.routines.map((r) => r.name)} />
+        <TodaysWorkouts entries={recentEntries} />
+      </div>
     </Screen>
   );
 }

@@ -24,6 +24,27 @@ export function listEntries(userId: string, exerciseId: number) {
     .orderBy(desc(entries.date), asc(entries.id));
 }
 
+// The last few days of entries, with exercise names, for "Today" on the
+// Routines tab. The device's date isn't known on the server, and can be a day
+// either side of the server's, so this reaches back two days and the client
+// keeps only its own today (see summarizeToday).
+export function listRecentEntries(userId: string) {
+  return getDb()
+    .select({
+      id: entries.id,
+      date: entries.date,
+      exerciseId: entries.exerciseId,
+      name: exercises.name,
+      sets: entries.sets,
+      reps: entries.reps,
+      weight: entries.weight,
+    })
+    .from(entries)
+    .innerJoin(exercises, eq(exercises.id, entries.exerciseId))
+    .where(and(eq(entries.userId, userId), gte(entries.date, addDays(localToday(), -2))))
+    .orderBy(asc(entries.id));
+}
+
 // The exercises the user has logged, most recently logged first, each with its
 // latest entry (the first entry of its most recent day, like the log form's
 // pre-fill). All of them unless `limit` is given.
