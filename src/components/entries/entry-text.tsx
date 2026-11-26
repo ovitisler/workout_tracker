@@ -13,3 +13,12 @@ export function EntryText({ entry }: { entry: Pick<EntryValues, "sets" | "reps" 
     </span>
   );
 }
+
+// An entry's note, under its numbers. Keeps the user's line breaks.
+export function EntryNote({ note }: { note: string }) {
+  return (
+    <span className="block text-sm break-words whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
+      {note}
+    </span>
+  );
+}

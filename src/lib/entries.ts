@@ -18,6 +18,7 @@ export function listEntries(userId: string, exerciseId: number) {
       sets: entries.sets,
       reps: entries.reps,
       weight: entries.weight,
+      note: entries.note,
     })
     .from(entries)
     .where(and(eq(entries.userId, userId), eq(entries.exerciseId, exerciseId)))

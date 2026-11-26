@@ -9,7 +9,7 @@ import { useLocalToday } from "@/lib/use-local-today";
 
 import { createEntry, type CreateEntryState } from "./actions";
 import { EntryFields, type EntryDefaults } from "./entry-fields";
-import { EntryText } from "./entry-text";
+import { EntryNote, EntryText } from "./entry-text";
 
 // The routine this exercise was opened from, for the "Next" button: its
 // exercises in order, with each one's most recent log date.
@@ -65,10 +65,11 @@ export function LogForm({
       <div role="status" className="flex flex-col gap-3 rounded-lg bg-white p-4 dark:bg-zinc-900">
         <div className="flex items-center gap-3">
           <CircleCheck className="size-7 shrink-0 text-blue-600 dark:text-blue-500" aria-hidden />
-          <div>
+          <div className="min-w-0">
             <p className="text-zinc-950 dark:text-zinc-50">
               Logged <EntryText entry={saved} />
             </p>
+            {saved.note && <EntryNote note={saved.note} />}
             {today && saved.date !== today && (
               <p className="text-sm text-zinc-500">on {formatDay(saved.date, today)}</p>
             )}
@@ -86,7 +87,7 @@ export function LogForm({
           <button
             type="button"
             onClick={() => {
-              setAgain(saved);
+              setAgain({ ...saved, note: null });
               setSaved(null);
             }}
             className={secondaryClass}

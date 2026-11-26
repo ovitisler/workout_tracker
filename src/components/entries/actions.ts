@@ -19,6 +19,7 @@ function parseForm(formData: FormData) {
     sets: field("sets"),
     reps: field("reps"),
     weight: field("weight"),
+    note: field("note"),
   });
 }
 

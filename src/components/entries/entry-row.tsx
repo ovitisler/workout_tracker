@@ -6,9 +6,16 @@ import { formatEntry } from "@/lib/entry-format";
 
 import { deleteEntry, updateEntry, type EntryFormState } from "./actions";
 import { EntryFields } from "./entry-fields";
-import { EntryText } from "./entry-text";
+import { EntryNote, EntryText } from "./entry-text";
 
-type Entry = { id: number; date: string; sets: number | null; reps: number; weight: number };
+type Entry = {
+  id: number;
+  date: string;
+  sets: number | null;
+  reps: number;
+  weight: number;
+  note: string | null;
+};
 
 export function EntryRow({ entry }: { entry: Entry }) {
   const [editing, setEditing] = useState(false);
@@ -30,6 +37,7 @@ export function EntryRow({ entry }: { entry: Entry }) {
         className="w-full px-3 py-3 text-left active:bg-zinc-100 dark:active:bg-zinc-800"
       >
         <EntryText entry={entry} />
+        {entry.note && <EntryNote note={entry.note} />}
       </button>
     );
   }
