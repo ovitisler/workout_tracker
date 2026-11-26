@@ -6,13 +6,17 @@ export type EntryValues = {
   sets: number | null; // null = one set
   reps: number;
   weight: number; // lb
+  note: string | null;
 };
+
+export const NOTE_MAX_LENGTH = 500;
 
 export type EntryInput = {
   date?: string | null;
   sets?: string | null;
   reps?: string | null;
   weight?: string | null;
+  note?: string | null;
 };
 
 export type ParseResult =
@@ -55,7 +59,13 @@ export function parseEntryInput(input: EntryInput): ParseResult {
     sets = parsed === 1 ? null : parsed;
   }
 
-  return { ok: true, values: { date, sets, reps, weight } };
+  // Forms submit line breaks as CRLF, which would count double.
+  const note = (input.note ?? "").replace(/\r\n/g, "\n").trim() || null;
+  if (note && note.length > NOTE_MAX_LENGTH) {
+    return { ok: false, error: `Keep the note to ${NOTE_MAX_LENGTH} characters or fewer.` };
+  }
+
+  return { ok: true, values: { date, sets, reps, weight, note } };
 }
 
 // 135 → "135", 137.5 → "137.5", 22.25 → "22.25"

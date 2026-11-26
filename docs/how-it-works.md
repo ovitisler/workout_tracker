@@ -136,6 +136,9 @@ often are one tap away. You get:
   137.5. Reps and sets start at 1 and never go below it.
 - **The date**, which defaults to today on your phone. Change it to log
   something you forgot.
+- **Notes** (optional), for anything the numbers miss, like a half rep or a
+  variation. Up to 500 characters; it shows under that entry in the history.
+  Each new entry starts with a blank note.
 - **History**, newest day first. If a day has more than one entry (say
   *2 × 8* then a weaker *1 × 6*), they're listed in the order you logged them.
 

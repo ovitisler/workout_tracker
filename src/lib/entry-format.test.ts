@@ -16,7 +16,7 @@ describe("parseEntryInput", () => {
   it("parses a full entry", () => {
     expect(parseEntryInput(valid)).toEqual({
       ok: true,
-      values: { date: "2026-09-19", sets: 3, reps: 8, weight: 135 },
+      values: { date: "2026-09-19", sets: 3, reps: 8, weight: 135, note: null },
     });
   });
 
@@ -36,6 +36,18 @@ describe("parseEntryInput", () => {
     expect(parse(".5")).toBe(0.5);
     expect(parse("0")).toBe(0);
     expect(parse("22.333")).toBe(22.33);
+  });
+
+  it("trims notes, treating a blank one as none", () => {
+    const parse = (note: string | null) => {
+      const result = parseEntryInput({ ...valid, note });
+      return result.ok ? result.values.note : result.error;
+    };
+    expect(parse(null)).toBe(null);
+    expect(parse("  ")).toBe(null);
+    expect(parse(" half rep \r\non the last set ")).toBe("half rep \non the last set");
+    expect(parse("a".repeat(500))).toBe("a".repeat(500));
+    expect(parse("a".repeat(501))).toBe("Keep the note to 500 characters or fewer.");
   });
 
   it.each([

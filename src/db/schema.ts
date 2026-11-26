@@ -140,6 +140,8 @@ export const entries = pgTable(
     reps: integer().notNull(),
     // Pounds.
     weight: numeric({ precision: 6, scale: 2, mode: "number" }).notNull(),
+    // Optional free text, e.g. "half rep on the last set". Null means none.
+    note: text(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

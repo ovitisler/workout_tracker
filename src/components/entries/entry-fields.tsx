@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { formatWeight } from "@/lib/entry-format";
+import { formatWeight, NOTE_MAX_LENGTH } from "@/lib/entry-format";
 import { useLocalToday } from "@/lib/use-local-today";
 
 export type EntryDefaults = {
@@ -10,6 +10,8 @@ export type EntryDefaults = {
   sets: number | null;
   reps: number;
   weight: number;
+  // Only passed when editing: a note belongs to one entry, so new ones start blank.
+  note?: string | null;
 };
 
 const inputClass =
@@ -87,6 +89,7 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
   // null but shown as 1.
   const [reps, setReps] = useState(defaults ? String(defaults.reps) : "1");
   const [sets, setSets] = useState(String(defaults?.sets ?? 1));
+  const [note, setNote] = useState(defaults?.note ?? "");
 
   return (
     <div className="flex flex-col gap-3">
@@ -127,6 +130,18 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
           value={date ?? today}
           onChange={(e) => setDate(e.target.value)}
           required
+          className={`${inputClass} text-left`}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-zinc-500">Notes (optional)</span>
+        <textarea
+          name="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          maxLength={NOTE_MAX_LENGTH}
+          rows={2}
+          placeholder="e.g. half rep on the last set"
           className={`${inputClass} text-left`}
         />
       </label>
