@@ -17,7 +17,7 @@ type Entry = {
   note: string | null;
 };
 
-export function EntryRow({ entry }: { entry: Entry }) {
+export function EntryRow({ entry, showNotes }: { entry: Entry; showNotes: boolean }) {
   const [editing, setEditing] = useState(false);
   const [deleting, startDelete] = useTransition();
   const [state, formAction, saving] = useActionState(
@@ -46,7 +46,7 @@ export function EntryRow({ entry }: { entry: Entry }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-3 p-3">
-      <EntryFields defaults={entry} />
+      <EntryFields defaults={entry} showNotes={showNotes} />
       {state.error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {state.error}

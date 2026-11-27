@@ -38,12 +38,14 @@ export function LogForm({
   defaults,
   doneHref,
   routine,
+  showNotes,
 }: {
   exerciseId: number;
   latestId: number | undefined;
   defaults: EntryDefaults | null;
   doneHref: string;
   routine?: RoutineContext;
+  showNotes: boolean;
 }) {
   const today = useLocalToday();
   // After a save the form gives way to a confirmation card; "Log another"
@@ -105,7 +107,11 @@ export function LogForm({
           Otherwise it resets when the latest entry changes (say, after editing
           history) — but not after "Log another": the refresh from the save
           can land after that, and would wipe what's being typed. */}
-      <EntryFields key={again ? "again" : latestId} defaults={again ?? defaults} />
+      <EntryFields
+        key={again ? "again" : latestId}
+        defaults={again ?? defaults}
+        showNotes={showNotes}
+      />
       {state.error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {state.error}

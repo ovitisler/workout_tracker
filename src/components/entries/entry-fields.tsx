@@ -81,7 +81,13 @@ function Stepper({
   );
 }
 
-export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
+export function EntryFields({
+  defaults,
+  showNotes,
+}: {
+  defaults: EntryDefaults | null;
+  showNotes: boolean;
+}) {
   const today = useLocalToday();
   const [date, setDate] = useState(defaults?.date);
   const [weight, setWeight] = useState(defaults ? formatWeight(defaults.weight) : "");
@@ -90,6 +96,8 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
   const [reps, setReps] = useState(defaults ? String(defaults.reps) : "1");
   const [sets, setSets] = useState(String(defaults?.sets ?? 1));
   const [note, setNote] = useState(defaults?.note ?? "");
+  // An entry that already has a note keeps the box, so it can be fixed or cleared.
+  const hasNotesBox = showNotes || Boolean(defaults?.note);
 
   return (
     <div className="flex flex-col gap-3">
@@ -133,18 +141,20 @@ export function EntryFields({ defaults }: { defaults: EntryDefaults | null }) {
           className={`${inputClass} text-left`}
         />
       </label>
-      <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-zinc-500">Notes (optional)</span>
-        <textarea
-          name="note"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          maxLength={NOTE_MAX_LENGTH}
-          rows={2}
-          placeholder="e.g. half rep on the last set"
-          className={`${inputClass} text-left`}
-        />
-      </label>
+      {hasNotesBox && (
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-zinc-500">Notes (optional)</span>
+          <textarea
+            name="note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            maxLength={NOTE_MAX_LENGTH}
+            rows={2}
+            placeholder="e.g. half rep on the last set"
+            className={`${inputClass} text-left`}
+          />
+        </label>
+      )}
     </div>
   );
 }

@@ -183,6 +183,15 @@ export const routineExercises = pgTable(
   (t) => [primaryKey({ columns: [t.routineId, t.exerciseId] })],
 );
 
+// Per-user preferences. No row means every default.
+export const userSettings = pgTable("user_settings", {
+  userId: text()
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // Whether the log and edit forms offer a notes box. Saved notes always show.
+  showNotes: boolean().notNull().default(true),
+});
+
 export const accessRequestStatus = pgEnum("access_request_status", [
   "pending",
   "approved",

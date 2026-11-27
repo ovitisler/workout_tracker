@@ -64,6 +64,13 @@
       "when": 1795708371703,
       "tag": "0008_entry_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795794431231,
+      "tag": "0009_user_settings",
+      "breakpoints": true
     }
   ]
 }

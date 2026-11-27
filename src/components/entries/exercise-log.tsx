@@ -2,6 +2,7 @@ import { EntryRow } from "@/components/entries/entry-row";
 import { LogForm, type RoutineContext } from "@/components/entries/log-form";
 import { listEntries } from "@/lib/entries";
 import { formatDay, groupByDate, localToday } from "@/lib/entry-format";
+import { getShowNotes } from "@/lib/settings";
 
 // The log screen for one exercise: the pre-filled form and the history.
 export async function ExerciseLog({
@@ -18,7 +19,10 @@ export async function ExerciseLog({
   doneHref: string;
   routine?: RoutineContext;
 }) {
-  const history = await listEntries(userId, exerciseId);
+  const [history, showNotes] = await Promise.all([
+    listEntries(userId, exerciseId),
+    getShowNotes(userId),
+  ]);
   // Pre-fill from the first entry of the most recent day: usually the main
   // working sets rather than a last, weaker set.
   const latest = history[0];
@@ -48,6 +52,7 @@ export async function ExerciseLog({
         }
         doneHref={doneHref}
         routine={routine}
+        showNotes={showNotes}
       />
 
       <section className="flex flex-col gap-3">
@@ -67,7 +72,7 @@ export async function ExerciseLog({
               <ul className="divide-y divide-zinc-200 overflow-hidden rounded-lg bg-white dark:divide-zinc-800 dark:bg-zinc-900">
                 {group.entries.map((entry) => (
                   <li key={entry.id}>
-                    <EntryRow entry={entry} />
+                    <EntryRow entry={entry} showNotes={showNotes} />
                   </li>
                 ))}
               </ul>
