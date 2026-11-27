@@ -5,18 +5,21 @@ import Link from "next/link";
 
 import { signOut } from "@/app/sign-in/actions";
 import { Screen } from "@/components/screen";
+import { NotesToggle } from "@/components/settings/notes-toggle";
 import { countPendingRequests, isAdmin } from "@/lib/access";
 import { listCustomExercises } from "@/lib/exercises";
 import { requireUser } from "@/lib/auth";
+import { getShowNotes } from "@/lib/settings";
 
 export const metadata: Metadata = { title: "Settings · Workout Tracker" };
 
 export default async function SettingsPage() {
   const user = await requireUser();
   const admin = isAdmin(user.email);
-  const [pending, customExercises] = await Promise.all([
+  const [pending, customExercises, showNotes] = await Promise.all([
     admin ? countPendingRequests() : 0,
     listCustomExercises(user.id),
+    getShowNotes(user.id),
   ]);
 
   return (
@@ -35,6 +38,16 @@ export default async function SettingsPage() {
               </button>
             </form>
           </div>
+        </section>
+
+        <section className="flex flex-col gap-1">
+          <h2 className="px-1 text-xs font-semibold tracking-wide text-zinc-500 uppercase">Logging</h2>
+          <div className="overflow-hidden rounded-lg bg-white dark:bg-zinc-900">
+            <NotesToggle showNotes={showNotes} />
+          </div>
+          <p className="px-1 text-xs text-zinc-500">
+            Turn off to hide the box when logging. Notes you&apos;ve saved still show in history.
+          </p>
         </section>
 
         <section className="flex flex-col gap-1">

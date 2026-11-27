@@ -51,9 +51,11 @@ export async function updateEntry(
   const parsed = parseForm(formData);
   if (!parsed.ok) return { error: parsed.error };
 
+  // A form without the notes box leaves any saved note alone.
+  const { note, ...numbers } = parsed.values;
   await getDb()
     .update(entries)
-    .set(parsed.values)
+    .set(formData.has("note") ? { ...numbers, note } : numbers)
     .where(and(eq(entries.id, entryId), eq(entries.userId, user.id)));
   refresh();
   return { ok: true };

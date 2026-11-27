@@ -138,7 +138,8 @@ often are one tap away. You get:
   something you forgot.
 - **Notes** (optional), for anything the numbers miss, like a half rep or a
   variation. Up to 500 characters; it shows under that entry in the history.
-  Each new entry starts with a blank note.
+  Each new entry starts with a blank note. Don't use them? Turn off **Notes
+  box** in Settings.
 - **History**, newest day first. If a day has more than one entry (say
   *2 × 8* then a weaker *1 × 6*), they're listed in the order you logged them.
 
@@ -243,8 +244,12 @@ weeks (a vacation, say) break the line rather than drawing across them.
 
 ## Settings and accounts
 
-**Settings** shows the email you're signed in with, **Custom exercises** (to
-rename or delete the ones you added), and **Sign out**.
+**Settings** shows the email you're signed in with, **Notes box**, **Custom
+exercises** (to rename or delete the ones you added), and **Sign out**.
+
+**Notes box** is on by default. Turning it off hides the box when you log or edit
+an entry. Saved notes still show in history, and editing an entry that has one
+still lets you change or clear it.
 
 Admins (set with `ADMIN_EMAILS`) also see **Access requests**, with a count of
 people waiting. Each request shows the email, their note and when they asked, with
